@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>How Well Do You Know Lebanon? · قديش بتعرف لبنان؟</title>
+<style>
+:root{--red:#ed1c24;--green:#00a651;--gold:#ffc93c;--deep:#052e24;--cream:#fff6dc;--ink:#10372c}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;color:#fff;background:var(--deep)}
+#stage{position:fixed;inset:0;background:#2a8fd0}
+#map{width:100%;height:100%;display:block;overflow:visible;touch-action:none;cursor:crosshair;direction:ltr}
+#map.shake{animation:shake .45s}
+.leb{fill:url(#lg);stroke:none;filter:drop-shadow(0 5px 9px rgba(0,0,0,.4))}
+.neigh{fill:url(#ng)}
+.btn{font:inherit;font-weight:800;border:0;border-radius:16px;padding:14px 26px;font-size:1.05rem;cursor:pointer;color:#fff;transition:transform .2s,box-shadow .2s,opacity .3s;box-shadow:0 6px 18px rgba(0,0,0,.3)}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.red{background:linear-gradient(135deg,var(--red),#ff5a3c)}
+.green{background:linear-gradient(135deg,var(--green),#35c46f)}
+.ghost{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);box-shadow:none}
+.pill{background:rgba(5,46,36,.82);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:8px 16px;font-weight:800;font-size:.95rem;border:0;color:#fff;font-family:inherit;cursor:pointer}
+button.pill:hover{background:rgba(0,166,81,.9)}
+#hud{position:absolute;top:12px;inset-inline:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:5;animation:fade .8s both}
+#hud>div{display:flex;gap:8px;align-items:center}
+.card{background:rgba(255,246,220,.97);color:var(--ink);border-radius:20px;box-shadow:0 12px 34px rgba(0,0,0,.35);overflow:hidden;position:relative}
+.card::before{content:"";display:block;height:7px;background:linear-gradient(90deg,var(--red) 0 33%,#fff 33% 66%,var(--red) 66%)}
+.pat{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 4l6 14 14-6-6 14 14 6-14 6 6 14-14-6-6 14-6-14-14 6 6-14-14-6 14-6-6-14 14 6z' fill='none' stroke='%2300a651' stroke-opacity='.13'/%3E%3C/svg%3E")}
+#chal{position:absolute;top:64px;inset-inline-start:14px;z-index:4;width:240px;text-align:center;padding-bottom:14px;animation:flip .7s both}
+#chal small{display:block;margin-top:10px;letter-spacing:2px;text-transform:uppercase;font-size:.7rem;color:var(--green);font-weight:800}
+#chal h2{margin:2px 0;font-size:2.1rem;color:var(--red)}
+#chal span{opacity:.7;font-size:1.1rem}
+#chal svg{width:30px;height:36px;position:absolute;top:14px;inset-inline-end:10px;opacity:.9}
+.side{position:absolute;top:64px;inset-inline-end:14px;width:330px;max-height:calc(100% - 150px);overflow:auto;z-index:8;animation:slide .6s both}
+.tile{height:130px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fb{padding:14px 18px 18px}
+.fb h3{margin:0;font-size:1.4rem}
+.verdict{display:inline-block;font-weight:900;padding:3px 12px;border-radius:999px;color:#fff;margin-bottom:6px}
+.verdict.ok{background:var(--green);animation:pop .6s}
+.verdict.no{background:#e08a1e}
+.dist{margin:2px 0 10px;font-weight:700;color:var(--green)}
+.did{font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:800}
+.fb p{margin:4px 0 0;line-height:1.55}
+#end .fb{text-align:center}
+.bignum{font-size:4.2rem;font-weight:900;color:var(--red);animation:pop .9s}
+.bignum small{color:var(--green);font-size:2.2rem}
+#acts{position:absolute;bottom:18px;inset-inline:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5}
+#hint{background:rgba(5,46,36,.8);padding:6px 14px;border-radius:999px;font-size:.85rem;animation:fade .6s both}
+#zoom{position:absolute;bottom:18px;inset-inline-start:14px;display:flex;flex-direction:column;gap:6px;z-index:5}
+#zoom button{width:44px;height:44px;font-size:1.3rem;padding:0;display:flex;align-items:center;justify-content:center}
+#toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:var(--red);padding:12px 22px;border-radius:14px;font-weight:800;z-index:9;opacity:0;pointer-events:none;transition:.3s;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.ov{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(5,46,36,.55),rgba(5,46,36,.9));backdrop-filter:blur(5px);animation:fade .8s both;padding:16px}
+.hc{max-width:520px;width:100%;text-align:center;padding:0 0 30px;animation:slide .8s .1s both}
+.hc>*:not(.flagbar){margin-inline:24px}
+.hc h1{font-size:2.2rem;margin:14px 24px 0;color:var(--ink)}
+.hc h2{margin:4px 24px 12px;font-size:1.7rem;color:var(--red)}
+.hc p{color:var(--ink);margin-bottom:22px}
+.trees{display:flex;justify-content:center;gap:6px;margin-top:14px}
+.trees svg{width:46px;height:56px}
+.hidden{display:none!important}
+#conf{position:absolute;inset:0;pointer-events:none;z-index:7}
+#cheer{position:absolute;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:20px}
+#cheer span{font-size:clamp(3.2rem,14vw,9rem);font-weight:900;letter-spacing:2px;color:#fff;text-shadow:0 0 40px #ffc93c,0 0 80px #ed1c24,0 8px 0 #ed1c24;animation:cheer 3.2s cubic-bezier(.3,.7,.3,1) both}
+@keyframes cheer{0%{opacity:0;transform:scale(.7)}22%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.18)}}
+#intro{position:absolute;inset:0;z-index:15;background:#02040f;transition:opacity 1s ease}
+#intro canvas{position:absolute;inset:0;width:100%;height:100%}
+#cap{position:absolute;bottom:14%;left:0;right:0;text-align:center;font-size:1.25rem;font-weight:700;letter-spacing:3px;text-shadow:0 2px 12px #000;opacity:0;transition:opacity .6s;padding:0 12px}
+#skip{position:absolute;bottom:18px;right:16px;z-index:16}
+.pinp{animation:drop .45s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:bottom center}
+.wob{animation:wob 1.2s .4s ease-in-out 2;transform-box:fill-box;transform-origin:bottom center}
+.truep{animation:pop .6s .4s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:bottom center}
+.ring{fill:none;stroke:#ffc93c;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:ring 1.6s ease-out 3 both}
+.spark{transform-box:fill-box;transform-origin:center;animation:spark 1.1s .5s ease-out both}
+.line{stroke:#ffc93c;stroke-width:3.5;stroke-dasharray:9 8;vector-effect:non-scaling-stroke;animation:fade .6s .2s both}
+.lbl{font-weight:800;fill:var(--ink);paint-order:stroke;stroke:#fff6dc;stroke-width:4;font-size:17px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slide{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes flip{from{opacity:0;transform:rotateX(70deg) translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes drop{from{transform:translateY(-50px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes ring{from{transform:scale(1);opacity:.9}to{transform:scale(9);opacity:0}}
+@keyframes spark{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media(max-width:720px){
+ #chal{top:58px;inset-inline:0;margin:auto;width:210px}
+ #chal h2{font-size:1.7rem}
+ .side{top:auto;bottom:84px;inset-inline:10px;width:auto;max-height:46%}
+ .tile{height:80px;font-size:2.6rem}
+ .hc h1{font-size:1.7rem}.hc h2{font-size:1.4rem}
+ #zoom{bottom:auto;top:58px;inset-inline-start:10px}
+ #zoom button{width:38px;height:38px}
+ #acts{bottom:14px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><symbol id="cedar" viewBox="0 0 40 50"><path d="M20 2 28 14h-5l9 11h-7l10 12H5l10-12H8l9-11h-5z" fill="#00a651"/><rect x="18" y="37" width="4" height="10" fill="#8a5a2b"/></symbol></svg>
+
+<div id="stage">
+<svg id="map" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3e6c0"/><stop offset="1" stop-color="#e3cc93"/></linearGradient>
+  <linearGradient id="sea" gradientUnits="userSpaceOnUse" x1="-1400" y1="0" x2="230" y2="0"><stop offset="0" stop-color="#06245e"/><stop offset=".55" stop-color="#0f55a8"/><stop offset=".85" stop-color="#2b8fcf"/><stop offset="1" stop-color="#5cc6dd"/></linearGradient>
+  <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dccb9c"/><stop offset="1" stop-color="#c9b27a"/></linearGradient>
+  <pattern id="wv" width="64" height="26" patternUnits="userSpaceOnUse"><path d="M0 13Q16 3 32 13T64 13" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="1.6"/></pattern>
+  <pattern id="gr" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".7" fill="#6b5a2a" fill-opacity=".18"/><circle cx="5.5" cy="5" r=".6" fill="#6b5a2a" fill-opacity=".12"/></pattern>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+  <clipPath id="lc"><path id="lcp"/></clipPath>
+ </defs>
+ <rect x="-3000" y="-3000" width="6000" height="6000" fill="url(#sea)"/>
+ <rect x="-3000" y="-3000" width="6000" height="6000" fill="url(#wv)"/>
+ <g id="halo" fill="none" stroke="#9be7ee" stroke-linejoin="round"><path id="h1" stroke-width="64" stroke-opacity=".12"/><path id="h2" stroke-width="38" stroke-opacity=".16"/><path id="h3" stroke-width="16" stroke-opacity=".24"/></g>
+ <g id="neigh"><path class="neigh"/></g>
+ <path id="leb" class="leb"/>
+ 
+ <g id="edges" fill="none" stroke-linejoin="round" stroke-linecap="round"><path id="coastF" stroke="#fff" stroke-opacity=".6" stroke-width="7"/><path id="coast" stroke="#9a6b2f" stroke-width="2.4"/><path id="bordW" stroke="#fff" stroke-opacity=".8" stroke-width="5"/><path id="bord" stroke="#7a2230" stroke-width="2.4" stroke-dasharray="9 5 2 5"/></g>
+ <g id="done"></g><g id="fx"></g>
+</svg>
+
+<div id="hud" class="hidden">
+ <div><span class="pill" id="rd"></span><span class="pill" id="sc"></span></div>
+ <div><button class="pill" id="home">🏠 <span data-t="home"></span></button><button class="pill" id="lang"></button></div>
+</div>
+
+<div id="chal" class="card pat hidden"><svg><use href="#cedar"/></svg><small data-t="find"></small><h2 id="cn"></h2><span id="cn2"></span></div>
+<div id="zoom" class="hidden"><button class="pill" id="zi">+</button><button class="pill" id="zo">−</button><button class="pill" id="zr">⟲</button></div>
+<aside id="fact" class="side card hidden"></aside>
+<aside id="end" class="side card hidden"></aside>
+<div id="acts" class="hidden"><div id="hint"></div><button class="btn red" id="lock" disabled></button><button class="btn green hidden" id="next"></button></div>
+<div id="toast"></div>
+
+<section id="homeScr" class="ov"><div class="hc card pat">
+ <div class="trees"><svg><use href="#cedar"/></svg><svg style="width:60px;height:72px"><use href="#cedar"/></svg><svg><use href="#cedar"/></svg></div>
+ <h1 id="ht"></h1><h2 id="ht2"></h2><p data-t="sub"></p>
+ <button class="btn red" id="start" data-t="start"></button>
+ <div style="margin-top:14px"><button class="btn ghost" id="lang2" style="color:var(--ink);border-color:var(--ink);padding:8px 18px;font-size:.9rem"></button></div>
+</div></section>
+<div id="cheer" class="hidden"><span id="cheerT"></span></div>
+<canvas id="conf"></canvas>
+<div id="intro"><canvas id="gl"></canvas><div id="cap"></div><button class="pill" id="skip">⏭ Skip Intro · تخطي</button></div>
+</div>
+
+<script>
+/* ---------- Data ---------- */
+const CITIES=[
+{id:"beirut",la:33.8938,lo:35.5018,e:"🌆",c:["#ed1c24","#ff8a5c"],
+ en:{n:"Beirut",f:"Beirut has been destroyed and rebuilt many times in its 5,000-year history, and layers of Phoenician, Roman and Ottoman life lie beneath the modern city."},
+ ar:{n:"بيروت",f:"دُمّرت بيروت وأُعيد بناؤها مرات عديدة خلال تاريخها الممتد نحو خمسة آلاف عام، وتحت المدينة الحديثة طبقات من العصور الفينيقية والرومانية والعثمانية."}},
+{id:"tripoli",la:34.4367,lo:35.8497,e:"🍬",c:["#00a651","#7bd88f"],
+ en:{n:"Tripoli",f:"Lebanon's second-largest city is famous for its Mamluk architecture and its Arabic sweets, which draw visitors from every region."},
+ ar:{n:"طرابلس",f:"ثاني أكبر مدن لبنان، تشتهر بعمارتها المملوكية وبحلويّاتها العربية التي يقصدها الزوّار من كل المناطق."}},
+{id:"byblos",la:34.1208,lo:35.6481,e:"📜",c:["#2a8fd0","#6fd0e8"],
+ en:{n:"Byblos",f:"One of the oldest continuously inhabited cities in the world. The word \"Bible\" comes from its ancient Greek name, because papyrus was traded through its port."},
+ ar:{n:"جبيل",f:"من أقدم المدن المأهولة باستمرار في العالم، وكلمة «Bible» مشتقة من اسمها اليوناني القديم «بيبلوس» لأن البردي كان يُتاجَر به عبر مرفئها."}},
+{id:"baalbek",la:34.0047,lo:36.2110,e:"🏛️",c:["#d98b1e","#ffc93c"],
+ en:{n:"Baalbek",f:"Its Roman Temple of Jupiter has some of the largest columns of the ancient world, and some of its stone blocks weigh hundreds of tons."},
+ ar:{n:"بعلبك",f:"في بعلبك معبد جوبيتر الروماني بأعمدة من بين الأضخم في العالم القديم، وتزن بعض كتله الحجرية مئات الأطنان."}},
+{id:"zahle",la:33.8463,lo:35.9020,e:"🍇",c:["#8e44ad","#d98cf0"],
+ en:{n:"Zahle",f:"Nicknamed the \"Bride of the Bekaa\", Zahle is famed for arak and for riverside restaurants along the Berdawni."},
+ ar:{n:"زحلة",f:"تُلقَّب زحلة بـ«عروس البقاع»، وتشتهر بالعرق وبمطاعمها على ضفاف نهر البردوني."}},
+{id:"sidon",la:33.5631,lo:35.3689,e:"🏰",c:["#0f6ea8","#4fb3e8"],
+ en:{n:"Sidon",f:"Sidon's Sea Castle was built by the Crusaders in the 13th century on a small island joined to the shore by a stone causeway."},
+ ar:{n:"صيدا",f:"بنى الصليبيون قلعة صيدا البحرية في القرن الثالث عشر على جزيرة صغيرة تتصل باليابسة بجسر حجري."}},
+{id:"tyre",la:33.2733,lo:35.1939,e:"🐚",c:["#a0268f","#ff7ab8"],
+ en:{n:"Tyre",f:"Ancient Tyre was a Phoenician power that gave the world Tyrian purple, a royal dye made from sea snails. It is now a UNESCO World Heritage site."},
+ ar:{n:"صور",f:"كانت صور قوة فينيقية قديمة أعطت العالم الأرجوان الصوري المستخرج من القواقع البحرية، وهي اليوم موقع تراث عالمي لليونسكو."}},
+{id:"bcharri",la:34.2500,lo:36.0167,e:"🌲",c:["#05683f","#00a651"],
+ en:{n:"Bcharri",f:"Hometown of the poet Khalil Gibran, author of The Prophet, it sits near the Cedars of God in the Qadisha Valley."},
+ ar:{n:"بشرّي",f:"مسقط رأس الشاعر جبران خليل جبران صاحب «النبي»، وتقع قرب أرز الربّ في وادي قاديشا."}}
+];
+const S={
+en:{title:"How Well Do You Know Lebanon?",sub:"Eight cities. One map. Drop your pin and find them!",start:"Start Game",home:"Home",find:"Find this city",lock:"Lock My Guess",next:"Next City",res:"See My Results",round:"Round",hint:"Tap the map to drop your pin · scroll or pinch to zoom",outside:"Place your pin inside Lebanon 🇱🇧",did:"Did you know?",d:"Your pin landed {d} km away",ok:"Spot on! 🎉",near:"So close!",no:"Not quite",again:"Play Again",p1:"+1 point",p0:"0 points",cheer:"WELL DONE!",toHome:"Return to Home",found:"cities found",m:["Time for a road trip! Play again and learn the map.","Good start! Keep exploring and try again.","Nice work! You know your way around.","Impressive! A true Lebanon expert.","Flawless! You know Lebanon like the back of your hand! 🇱🇧"],other:"العربية"},
+ar:{title:"قديش بتعرف لبنان؟",sub:"ثماني مدن، خريطة واحدة. ضع دبوسك وجد المدينة!",start:"ابدأ اللعب",home:"الرئيسية",find:"جد هذه المدينة",lock:"ثبّت تخميني",next:"المدينة التالية",res:"شاهد النتيجة",round:"الجولة",hint:"المس الخريطة لوضع الدبوس · مرّر أو قرّب بإصبعين للتكبير",outside:"ضع الدبوس داخل لبنان 🇱🇧",did:"هل تعلم؟",d:"سقط دبوسك على بُعد {d} كم",ok:"إصابة مباشرة! 🎉",near:"قريب جدًا!",no:"ليس تمامًا",again:"العب مجددًا",p1:"+1 نقطة",p0:"0 نقطة",cheer:"أحسنتم!",toHome:"العودة إلى الرئيسية",found:"مدن تم إيجادها",m:["حان وقت رحلة! العب مجددًا وتعرّف على الخريطة.","بداية جيدة! تابع الاستكشاف وحاول مجددًا.","عمل جميل! أنت تعرف طريقك.","رائع! خبير حقيقي بلبنان.","مثالي! تعرف لبنان كظهر يدك! 🇱🇧"],other:"English"}
+};
+const HIT_KM=20;
+
+/* ---------- Geometry (Lebanon outline, lon/lat) ---------- */
+const K=400,C=Math.cos(33.9*Math.PI/180);
+const X=lo=>(lo-35)*C*K,Y=la=>(34.8-la)*K;
+const BASE={x:0,y:0,w:X(36.7),h:Y(32.95)};
+const COAST=[[35.10,33.09],[35.14,33.19],[35.18,33.27],[35.22,33.33],[35.30,33.46],[35.35,33.56],[35.42,33.65],[35.45,33.74],[35.49,33.84],[35.47,33.90],[35.52,33.92],[35.58,33.94],[35.63,34.02],[35.63,34.12],[35.66,34.21],[35.68,34.28],[35.72,34.33],[35.74,34.38],[35.80,34.44],[35.88,34.49],[35.95,34.55],[35.97,34.63]];
+const LAND=[[36.05,34.64],[36.13,34.67],[36.22,34.65],[36.29,34.68],[36.37,34.64],[36.40,34.58],[36.47,34.53],[36.53,34.45],[36.58,34.36],[36.58,34.27],[36.57,34.18],[36.55,34.08],[36.50,34.00],[36.42,33.97],[36.35,33.91],[36.25,33.86],[36.15,33.82],[36.06,33.77],[35.98,33.72],[35.96,33.65],[35.93,33.56],[35.88,33.47],[35.83,33.40],[35.78,33.34],[35.72,33.30],[35.64,33.27],[35.59,33.22],[35.54,33.13],[35.48,33.09],[35.40,33.07],[35.32,33.09],[35.22,33.09]];
+let pts=COAST.concat(LAND).map(([lo,la])=>[X(lo),Y(la)]);
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const svg=$('#map'),NS='http://www.w3.org/2000/svg';
+const D=a=>'M'+a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L');
+function drawLeb(){const d=D(pts)+'Z';['leb','lcp','h1','h2','h3'].forEach(i=>$('#'+i).setAttribute('d',d))}
+function customOutline(){['neigh','halo','edges'].forEach(i=>$('#'+i).style.display='none');$('#leb').style.stroke='#7a2230';$('#leb').style.strokeWidth=3}
+const cp=COAST.map(([lo,la])=>[X(lo),Y(la)]);
+$('#neigh path').setAttribute('d',`M${X(34.8)},3000L${X(34.95)},${Y(32.5)}`+D(cp).replace('M','L')+`L${cp[cp.length-1][0]},-3000L3000,-3000L3000,3000Z`);
+drawLeb();
+/* Optional: drop a precise "lebanon.geojson" next to index.html and it replaces the built-in outline */
+fetch('lebanon.geojson').then(r=>r.ok?r.json():Promise.reject()).then(g=>{
+ let f=g.type==='FeatureCollection'?g.features[0].geometry:(g.geometry||g);
+ const rings=f.type==='Polygon'?[f.coordinates[0]]:f.coordinates.map(p=>p[0]);
+ pts=rings.sort((a,b)=>b.length-a.length)[0].map(([lo,la])=>[X(lo),Y(la)]);
+ customOutline();drawLeb();
+}).catch(()=>{});
+const inside=(x,y)=>{let c=false;for(let i=0,j=pts.length-1;i<pts.length;j=i++){const[a,b]=pts[i],[p,q]=pts[j];if((b>y)!=(q>y)&&x<(p-a)*(y-b)/(q-b)+a)c=!c}return c};
+const hav=(a,b,c,d)=>{const r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)**2;return 12742*Math.asin(Math.sqrt(h))};
+
+/* ---------- SVG helpers, zoom, pan ---------- */
+const E=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e};
+let vb={...BASE},ms=[];
+const place=m=>m.g.setAttribute('transform',`translate(${m.x},${m.y}) scale(${vb.w/BASE.w*m.k})`);
+function setVB(v){const w=Math.min(BASE.w,Math.max(BASE.w/8,v.w)),h=w*BASE.h/BASE.w;
+ const x=w>=BASE.w?0:Math.min(Math.max(v.x,-60),BASE.w+60-w),y=h>=BASE.h?0:Math.min(Math.max(v.y,-60),BASE.h+60-h);
+ vb={x,y,w,h};svg.setAttribute('viewBox',`${x} ${y} ${w} ${h}`);ms.forEach(place)}
+setVB(BASE);
+const LL=a=>a.map(([lo,la])=>[X(lo),Y(la)]);
+(()=>{const cd=D(LL(COAST)),bd=D(LL([COAST[COAST.length-1],...LAND,COAST[0]]));
+ ['coast','coastF'].forEach(i=>$('#'+i).setAttribute('d',cd));['bord','bordW'].forEach(i=>$('#'+i).setAttribute('d',bd))})();
+const M=(par,x,y,k=1)=>{const m={g:E('g',{},par),x,y,k};ms.push(m);place(m);return m};
+const toS=(cx,cy)=>{const p=svg.createSVGPoint();p.x=cx;p.y=cy;return p.matrixTransform(svg.getScreenCTM().inverse())};
+function zoomAt(px,py,f){const w=Math.min(BASE.w,Math.max(BASE.w/8,vb.w*f)),r=w/vb.w;setVB({x:px-(px-vb.x)*r,y:py-(py-vb.y)*r,w})}
+function fly(t,dur=800){const s={...vb},t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/dur),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+ setVB({x:s.x+(t.x-s.x)*e,y:s.y+(t.y-s.y)*e,w:s.w+(t.w-s.w)*e});if(p<1)requestAnimationFrame(f)})(t0)}
+function fit(a,b){const dx=Math.abs(a[0]-b[0]),dy=Math.abs(a[1]-b[1]),w=Math.max(dx+200,(dy+200)*BASE.w/BASE.h,BASE.w/5),cx=(a[0]+b[0])/2,cy=(a[1]+b[1])/2;
+ fly({x:cx-w/2,y:cy-w*BASE.h/BASE.w/2,w})}
+const P=new Map();let mv=0,pd=0;
+const pdist=()=>{const a=[...P.values()];return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};
+svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);P.set(e.pointerId,[e.clientX,e.clientY]);mv=0;if(P.size==2)pd=pdist()});
+svg.addEventListener('pointermove',e=>{if(!P.has(e.pointerId))return;const o=P.get(e.pointerId),n=[e.clientX,e.clientY];P.set(e.pointerId,n);
+ if(P.size==1){const k=svg.getScreenCTM().a;mv+=Math.abs(n[0]-o[0])+Math.abs(n[1]-o[1]);if(mv>8)setVB({x:vb.x-(n[0]-o[0])/k,y:vb.y-(n[1]-o[1])/k,w:vb.w})}
+ else{const d=pdist(),a=[...P.values()],p=toS((a[0][0]+a[1][0])/2,(a[0][1]+a[1][1])/2);if(pd)zoomAt(p.x,p.y,pd/d);pd=d;mv=99}});
+const up=e=>{const one=P.size==1;P.delete(e.pointerId);pd=0;if(one&&mv<8&&e.type==='pointerup')tap(e.clientX,e.clientY)};
+svg.addEventListener('pointerup',up);svg.addEventListener('pointercancel',up);
+svg.addEventListener('wheel',e=>{e.preventDefault();const p=toS(e.clientX,e.clientY);zoomAt(p.x,p.y,e.deltaY>0?1.2:1/1.2)},{passive:false});
+const zc=f=>zoomAt(vb.x+vb.w/2,vb.y+vb.h/2,f);
+$('#zi').onclick=()=>zc(1/1.5);$('#zo').onclick=()=>zc(1.5);$('#zr').onclick=()=>fly(BASE,500);
+
+/* ---------- Game ---------- */
+let L='en',G={phase:'home',deck:[],i:0,found:0,pin:null,guess:null,done:[],over:false};
+const t=k=>S[L][k],cur=()=>G.deck[G.i];
+const fx=$('#fx'),dn=$('#done');
+function pinAt(x,y,col,cls){const m=M(fx,x,y);const g=E('g',{class:cls},m.g);
+ E('path',{d:'M0 0C-12-14-16-22-16-30a16 16 0 0 1 32 0C16-22 12-14 0 0Z',fill:col,stroke:'#fff','stroke-width':3},g);E('circle',{cy:-30,r:6,fill:'#fff'},g);return m}
+function toast(s){const e=$('#toast');e.textContent=s;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)}
+function drawDone(){dn.innerHTML='';ms=ms.filter(m=>!m.done);
+ G.done.forEach(c=>{const m=M(dn,X(c.lo),Y(c.la),G.over?1.5:1);m.done=1;E('circle',{r:6,fill:'#00a651',stroke:'#fff','stroke-width':2.5},m.g);
+  const tx=E('text',{class:'lbl',x:L==='ar'?-10:10,y:-9,'text-anchor':L==='ar'?'end':'start'},m.g);tx.textContent=c[L].n})}
+
+function tap(cx,cy){if(G.phase!=='guess')return;const p=toS(cx,cy);
+ if(!inside(p.x,p.y)){toast(t('outside'));svg.classList.remove('shake');void svg.getBoundingClientRect();svg.classList.add('shake');return}
+ if(G.pin)rm(G.pin);G.pin=pinAt(p.x,p.y,'#ed1c24','pinp');G.guess=p;$('#lock').disabled=false}
+const rm=m=>{m.g.remove();ms=ms.filter(a=>a!==m)};
+
+function setPhase(p){G.phase=p;
+ const on=(s,v)=>$(s).classList.toggle('hidden',!v),g=p==='guess',r=p==='reveal';
+ on('#homeScr',p==='home');on('#hud',p!=='home');on('#chal',g||r);on('#zoom',p!=='home'&&p!=='finale');on('#acts',g||r);on('#fact',r);on('#end',p==='end');
+ on('#hint',g);on('#lock',g);on('#next',r);render()}
+function render(){
+ document.documentElement.lang=L;document.documentElement.dir=L==='ar'?'rtl':'ltr';
+ $$('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+ $('#ht').textContent=S[L].title;$('#ht2').textContent=S[L==='en'?'ar':'en'].title;
+ $('#lang').textContent=$('#lang2').textContent=t('other');
+ $('#hint').textContent=t('hint');$('#lock').textContent=t('lock');
+ $('#rd').textContent=`${t('round')} ${Math.min(G.i+1,8)}/8`;$('#sc').textContent=`⭐ ${G.found}`;
+ $('#next').textContent=G.i===7?t('res'):t('next');
+ const c=cur();if(c){$('#cn').textContent=c[L].n;$('#cn2').textContent=c[L==='en'?'ar':'en'].n}
+ if(G.phase==='reveal')fillFact();if(G.phase==='end')fillEnd();drawDone()}
+
+function start(){G={phase:'guess',deck:[...CITIES].sort(()=>Math.random()-.5),i:0,found:0,pin:null,guess:null,done:[],over:false};
+ fx.innerHTML='';ms=ms.filter(m=>m.done);dn.style.transition='none';dn.style.opacity=1;fly(BASE,600);$('#lock').disabled=true;setPhase('guess')}
+
+$('#lock').onclick=()=>{if(!G.pin)return;const c=cur(),tx=X(c.lo),ty=Y(c.la),g=G.guess;
+ const la=34.8-g.y/K,lo=g.x/(C*K)+35;G.d=hav(la,lo,c.la,c.lo);G.hit=G.d<=HIT_KM;if(G.hit)G.found++;
+ E('line',{class:'line',x1:g.x,y1:g.y,x2:tx,y2:ty},fx);
+ const m=pinAt(tx,ty,'#ffc93c','truep');
+ if(G.hit){for(let i=0;i<14;i++){const a=i/14*6.283,r=40+Math.random()*30,s=E('circle',{class:'spark',r:5,cx:0,cy:-15,fill:['#ed1c24','#fff','#00a651','#ffc93c'][i%4]},m.g);s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',Math.sin(a)*r+'px')}}
+ else{E('circle',{class:'ring',r:8,cx:0,cy:-2},m.g);G.pin.g.firstChild.classList.add('wob')}
+ fit([g.x,g.y],[tx,ty]);setPhase('reveal')};
+
+function fillFact(){const c=cur(),v=G.d<=HIT_KM?['ok',t('ok')]:G.d<=80?['no',t('near')]:['no',t('no')];
+ $('#fact').innerHTML=`<div class="tile" style="background:linear-gradient(135deg,${c.c[0]},${c.c[1]})"><span>${c.e}</span><img src="img/${c.id}.jpg" alt="" onerror="this.remove()"></div>
+ <div class="fb"><span class="verdict ${v[0]}">${v[1]}</span><h3>${c[L].n}</h3><div class="dist">${t('d').replace('{d}',G.d.toFixed(G.d<10?1:0))} · ${G.d<=HIT_KM?t('p1'):t('p0')}</div><div class="did">${t('did')}</div><p>${c[L].f}</p></div>`}
+
+$('#next').onclick=()=>{fx.innerHTML='';ms=ms.filter(m=>m.done);G.pin=null;
+ if(G.i<7){G.done.push(cur());G.i++;fly(BASE,700);$('#lock').disabled=true;setPhase('guess')}
+ else{fly(BASE,1400);setPhase('finale');$('#cheerT').textContent=t('cheer');const ch=$('#cheer');ch.classList.remove('hidden');confetti();
+  setTimeout(()=>{dn.style.transition='opacity .5s';dn.style.opacity=0},2800);
+  setTimeout(()=>{ch.classList.add('hidden');if(G.phase!=='finale')return;G.done.push(cur());G.over=true;setPhase('end');dn.style.transition='opacity 1.3s';requestAnimationFrame(()=>requestAnimationFrame(()=>dn.style.opacity=1))},3400)}};
+
+function fillEnd(){const s=G.found,m=S[L].m[s>=8?4:s>=6?3:s>=4?2:s>=2?1:0];
+ $('#end').innerHTML=`<div class="fb pat"><div class="bignum">${s}<small>/8</small></div><div class="dist">${t('found')}</div><p style="margin:10px 0 16px;font-weight:700">${m}</p>
+ <div style="display:flex;flex-direction:column;gap:8px"><button class="btn red" id="again">${t('again')}</button><button class="btn green" id="toHome">${t('toHome')}</button></div></div>`;
+ $('#again').onclick=start;$('#toHome').onclick=goHome}
+function goHome(){$('#cheer').classList.add('hidden');dn.style.transition='none';dn.style.opacity=1;G.phase='home';fx.innerHTML='';G.done=[];G.over=false;ms=ms.filter(m=>m.done);dn.innerHTML='';fly(BASE,500);setPhase('home')}
+$('#start').onclick=start;$('#home').onclick=goHome;
+$('#lang').onclick=$('#lang2').onclick=()=>{L=L==='en'?'ar':'en';render()};
+
+function confetti(){const c=$('#conf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+ const cols=['#ed1c24','#ffffff','#00a651','#ffc93c','#2a8fd0'];
+ const ps=Array.from({length:120},()=>({x:Math.random()*c.width,y:-Math.random()*c.height,r:5+Math.random()*7,v:2+Math.random()*3.5,s:Math.random()*2-1,a:Math.random()*6,c:cols[Math.random()*5|0]}));
+ let f=0;(function loop(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.a+=.06)*1.5+p.s;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*.6)});
+  if(++f<760)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})()}
+setPhase('home');$('#homeScr').classList.add('hidden');
+
+/* ---------- Opening cinematic: orthographic globe -> eastern Mediterranean -> Lebanon ---------- */
+const PL=q=>{const a=q.trim().split(/\s+/).map(Number),r=[];for(let i=0;i<a.length;i+=2)r.push([a[i],a[i+1]]);return r};
+const LAND_P=[
+ PL("-5.9 35.8 -2 35.1 3 36.8 10 37.2 11 35.5 10 33.9 15 32.3 19 30.3 20 32.1 22 33 25 31.6 29 30.9 31.5 31.5 32.3 31.2 32.6 30 33.5 27.5 34 26.7 35.5 23.9 37.2 19.6 39.5 15.6 43.1 11.6 51.3 11.8 49.5 8 48 5 45 2 41.5 -1.7 40 -4 39.3 -6.8 40.5 -10.5 40.6 -15 35 -20 35.5 -24 32.9 -26 31 -29.9 27 -33.5 20 -34.8 18.4 -34 15 -27 12 -18 13.5 -12 12 -5.5 9 -0.5 9.7 4 6 4.3 4 6.3 -1 5 -4 5.2 -8 4.5 -13 8.5 -16.8 12.5 -17.5 14.7 -16.5 19 -17 21 -13 27.5 -9.8 30.5 -9.8 32.8 -6.8 34"),
+ [[32.3,31.2],[34.4,31.4],[34.9,32.4],[35.0,32.8]].concat(COAST,PL("35.95 35.9 36.15 36.6 35.8 36.75 34.6 36.7 33.5 36.2 32 36.1 30.6 36.8 29 36.7 27.3 37 26.5 38.4 26.2 39.5 26.2 40.1 26 40.7 24 40.8 23 40 22.9 39 24 38 23 36.5 21.8 36.8 21.2 38 20.2 39.5 19.4 41.9 18.5 42.5 16.5 43.5 14.5 45.2 13.6 45.7 12.3 45.2 13.5 43.6 14.5 42.2 16 41.9 18.5 40.1 17.2 40.5 16.5 39.5 16.1 38 15.7 38 16 39.5 15.6 40 14.3 40.8 12.4 41.7 10.5 43 9 44.4 7.5 43.8 5 43.3 3.1 43 3.2 41.9 0.8 41 -0.3 39.5 -0.1 38.7 -2 36.8 -4.4 36.7 -5.6 36 -6.3 36.8 -8.9 37 -9.5 38.7 -8.8 41.5 -9.2 43.1 -7 43.7 -1.8 43.4 -1.2 46 -4.5 48.4 -1.6 48.7 1.5 50.9 3.5 51.4 4.5 52.9 8.6 54 8.2 57 5.5 58.5 5 60.5 5.5 62 9 63.5 12 65.5 14.5 68 18 69.8 25 71 31 70.2 40 67.5 44 68 53 68.5 60 69.5 68 69 70 73 80 73.5 87 75 100 77.5 105 77 113 74 128 72 140 72.5 150 71.5 160 69.5 170 70 180 69 180 65 172 64.5 170 60 163 58 162 55.5 156 51 155.5 57 160 61 155 59.5 143 59.3 137 54 141 53 140 48 135 43.5 132 42.8 129.5 41 129.5 36 127 34.8 126.5 37.5 125 39.6 121.6 39 121.5 40.8 119.5 39.5 118 39 117.8 38.3 119 37.2 122.6 37.2 120.5 36 119.5 34.5 121.8 31.5 121.8 29 119.5 25.5 117 23.5 114 22.3 110.5 21 108 21.5 106.7 20.5 105.8 19 108.5 15 109.3 12 107 10.5 105 8.7 104.8 10.4 103 10.5 100.9 13.5 99.5 9.5 100.5 7 103.4 4 104.2 1.4 103.5 1.3 101 2.8 100.3 5.5 98.5 8.5 98.3 12 97.5 16.5 94.5 16.2 94.3 18.5 92 21 91.5 22.5 90.5 22 88.5 21.7 86.8 20.5 84.5 18.5 82 16.5 80.2 15.5 80.3 13 79.8 10.3 77.5 8.1 76.3 9.8 75 12.5 73.5 16.8 72.8 19 72.6 21.5 70.5 20.8 69 22.3 68.5 23.8 66.5 25.4 61.5 25.2 57.5 25.7 56.5 27 54.5 26.6 52 27.8 50.2 30 48.8 30.1 48 29.8 49.7 27 50.5 26 51.5 24.5 53 24.2 54.5 24.5 56 26 57 23.5 58.5 23.6 59.8 22.5 58 20.5 55.5 17.5 52.5 16.5 49 14.5 45 12.8 43.3 12.7 42.8 15 42.7 16.5 41.2 19.5 39.2 21.5 38.5 24 36.5 26 35 28.2 34.9 29.5 34.25 27.75 33.6 28.5 32.6 29.9 32.5 30.7")),
+ PL("-168 66 -164 63 -165 60 -158 58.5 -160 56 -152 59 -148 60.5 -140 59.8 -135 57 -130 54 -127 50 -124.5 48 -124 43 -122.5 37.5 -120.5 34.5 -117.2 32.5 -114.7 31.7 -110.5 27 -109.5 23 -105.5 20 -101 17.5 -96 15.8 -92 14.5 -88 13.2 -86 12 -83.5 10 -80 7.5 -77.5 8.6 -79.5 9.5 -83.5 11 -83.5 15 -88 16 -87.5 21 -90.4 21.2 -91 19 -94.5 18.2 -97.5 22 -97.2 26 -94 29.5 -89 29 -85 29.8 -82.8 28 -81 25.2 -80 26.8 -81 31 -76 35 -75.5 38 -74 40.5 -70 41.7 -70 43.7 -66 44.5 -61 45.5 -60 47 -55 50 -56 53 -61 56 -65 60 -70 62.5 -78 62.5 -82 66 -90 68.5 -95 71.5 -105 68.5 -115 68 -125 69.5 -135 69 -141 69.7 -156 71.3 -163 69.5"),
+ PL("-77.5 8.6 -72 12 -68 10.7 -62 10.7 -60 8.5 -57 6 -52 5 -50 1.5 -48 -1 -44 -2.5 -40 -3 -35 -5.5 -35 -9 -39 -14 -39 -18 -41 -22 -45 -23.5 -48.5 -26 -48.8 -28.5 -52 -32 -54 -34.5 -58 -34.5 -57.5 -36 -62 -39 -65 -41 -64.5 -43 -67.5 -46 -66 -48 -69 -51 -68.5 -52.5 -72 -53 -74 -51 -75.5 -47 -73.5 -42 -73.5 -37 -71.5 -30 -70.5 -23 -70.3 -18.5 -76 -14 -79 -8 -81.2 -5 -80 -2 -80 0.5 -78.8 1.5 -77.5 4"),
+ PL("-73 78 -60 82 -30 83.5 -20 80 -20 70 -30 68 -43 60 -50 64 -55 70 -60 76"),
+ PL("114 -22 113.5 -26 115 -34 118 -35 124 -33.5 131 -31.5 135.5 -35 138 -35.5 140 -38 146 -39 150 -37 153 -31 153 -25 146 -19 145 -15 142.5 -10.7 141.5 -13 140 -17.5 136 -15 135 -12 131 -11.5 128 -15 125 -14.5 122 -18"),
+ PL("-5.5 50 1.4 51.2 1.7 52.7 -0.2 54 -2 55.8 -1.8 57.6 -3.5 58.6 -5 58.6 -6 57 -5.5 55 -3 54.5 -3 53.4 -4.7 52.7 -4.2 51.6"),
+ PL("-10 52 -6 52.2 -6 54.5 -8 55.2 -10 54"),PL("-24 65.5 -18 66.2 -13.5 65 -18 63.4 -22.5 63.8"),
+ PL("32.3 34.9 33 34.6 34 35 34.6 35.7 33.5 35.3 32.4 35.4"),PL("23.5 35.3 26.3 35.2 26.2 35 23.5 35.2"),
+ PL("12.5 38 15.6 38.2 15.1 36.7 12.5 37.6"),PL("8.2 41 9.7 41 9.6 39.2 8.4 39"),
+ PL("130.5 31.5 132 33.5 135 34 139.5 35 141 38 141.5 41 140 40 139.8 38 137 36.8 136 36 132.5 35.4 130.5 33.5"),
+ PL("49.3 -12 50.4 -15.5 47 -25 43.5 -23 44 -17 48 -13.5"),PL("95.3 5.5 98 4 104 -2 106 -5.8 102 -4 96 2.5"),
+ PL("109 1.5 111 1.7 117 7 119 5 118 1 116 -4 110 -3"),PL("105.3 -6.8 114.5 -7.8 114 -8.7 106 -7")
+];
+const WATER_P=[
+ PL("28 41.9 28 43.5 29.7 45.2 31 46.6 33.5 46 32.5 45.3 33.5 44.5 35.5 45 36.5 45.4 38 46.5 37.5 47.2 39 47 37.5 45.5 38 44.5 40 43.5 41.7 42 41.5 41.5 38 41 35 42 31.5 41.2 29.1 41.2"),
+ PL("47 45 50 46.5 53 45.5 53 42 53.9 40.5 53.2 38.9 54.5 37.5 50.3 37 49 38.5 49.6 40.4 47.8 41.7 47.5 43"),
+ PL("10.5 54.5 14 54 19 54.5 21 57 24 57.5 24 59.5 28 60 30 60 25 60.5 21.5 60.5 21.5 63 25 65 22 65.8 18 62.5 17.5 60.5 19 59.5 16.5 57 15.5 56 13 55.4 12.5 56 11 57")
+];
+function runIntro(){
+ const box=$('#intro'),cv=$('#gl'),g=cv.getContext('2d'),cap=$('#cap'),RD=Math.PI/180;
+ let W,H,dpr=Math.min(2,devicePixelRatio||1),done=0,raf,tm=[];
+ const sz=()=>{W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0)};sz();addEventListener('resize',sz);
+ const showHome=()=>$('#homeScr').classList.remove('hidden');
+ function finish(fast){if(done)return;done=1;cancelAnimationFrame(raf);tm.forEach(clearTimeout);box.style.transition=`opacity ${fast?.4:1}s ease`;box.style.opacity=0;showHome();setTimeout(()=>box.remove(),1100)}
+ $('#skip').onclick=()=>finish(true);
+ 
+ const lonC=35+BASE.w/2/(C*K),latC=34.8-BASE.h/2/K,T=5600,cl=x=>Math.max(0,Math.min(1,x)),sm=x=>x*x*(3-2*x);
+ const stars=Array.from({length:180},()=>[Math.random(),Math.random(),Math.random()*1.3+.3]);
+ const caps=[[0,"PLANET EARTH · كوكب الأرض"],[2100,"THE MIDDLE EAST · الشرق الأوسط"],[3800,"LEBANON · لبنان"]];
+ let ci=-1;const t0=performance.now();
+ tm.push(setTimeout(()=>{box.style.opacity=0},5100),setTimeout(showHome,5450),setTimeout(()=>finish(false),6400));
+ function frame(now){
+  const e=now-t0,t=Math.min(1,e/T),rot=sm(cl(t/.85)),zp=sm(cl((t-.28)/.67)),
+   ds=Math.min(W/BASE.w,H/BASE.h),R0=Math.min(W,H)*.3,R1=K*ds*57.2958,R=R0*Math.pow(R1/R0,zp),
+   lon0=-40+(lonC+40)*rot,lat0=12+(latC-12)*rot,sp=Math.sin(lat0*RD),cp=Math.cos(lat0*RD),cx=W/2,cy=H/2;
+  const pr=(lo,la)=>{const l=(lo-lon0)*RD,f=la*RD,cf=Math.cos(f),c=sp*Math.sin(f)+cp*cf*Math.cos(l);let x=R*cf*Math.sin(l),y=-R*(cp*Math.sin(f)-sp*cf*Math.cos(l));if(c<0){const m=Math.hypot(x,y)||1;x*=R/m;y*=R/m}return[cx+x,cy+y]};
+  const clipP=(a,x0,y0,x1,y1)=>{let o=a;const ed=[[p=>p[0]>=x0,(p,q)=>[x0,p[1]+(q[1]-p[1])*(x0-p[0])/(q[0]-p[0])]],[p=>p[0]<=x1,(p,q)=>[x1,p[1]+(q[1]-p[1])*(x1-p[0])/(q[0]-p[0])]],[p=>p[1]>=y0,(p,q)=>[p[0]+(q[0]-p[0])*(y0-p[1])/(q[1]-p[1]),y0]],[p=>p[1]<=y1,(p,q)=>[p[0]+(q[0]-p[0])*(y1-p[1])/(q[1]-p[1]),y1]]];
+   for(const[ins,ix]of ed){const r=[];for(let i=0;i<o.length;i++){const p=o[i],q=o[(i+1)%o.length],u=ins(p),v=ins(q);if(u)r.push(p);if(u!==v)r.push(ix(p,q))}o=r;if(!o.length)break}return o};
+  const path=a=>{const o=clipP(a.map(q=>pr(q[0],q[1])),-300,-300,W+300,H+300);if(o.length<3)return false;g.beginPath();o.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.closePath();return true};
+  let k=0;caps.forEach((c,i)=>{if(e>=c[0])k=i});
+  if(k!==ci){ci=k;cap.style.opacity=0;tm.push(setTimeout(()=>{cap.textContent=caps[k][1];cap.style.opacity=1},350))}
+  if(e>4700)cap.style.opacity=0;
+  const sg=g.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H));sg.addColorStop(0,'#0a1236');sg.addColorStop(1,'#01020a');g.fillStyle=sg;g.fillRect(0,0,W,H);
+  g.fillStyle='#fff';stars.forEach(s=>{g.globalAlpha=(.4+.6*Math.sin(e/500+s[0]*20)**2)*(1-zp);g.fillRect(s[0]*W,s[1]*H,s[2],s[2])});g.globalAlpha=1;
+  const big=R>Math.max(W,H)*2,gr=Math.min(R,Math.max(W,H)*2);
+  if(!big){const ag=g.createRadialGradient(cx,cy,R*.97,cx,cy,R*1.16);ag.addColorStop(0,'rgba(110,180,255,.6)');ag.addColorStop(1,'rgba(110,180,255,0)');g.fillStyle=ag;g.fillRect(0,0,W,H)}
+  g.save();if(!big){g.beginPath();g.arc(cx,cy,R,0,6.2832);g.clip()}
+  const og=g.createRadialGradient(cx-gr*.35,cy-gr*.35,gr*.05,cx,cy,gr*1.05);og.addColorStop(0,'#3d9be0');og.addColorStop(.6,'#1457a8');og.addColorStop(1,'#06224f');g.fillStyle=og;g.fillRect(0,0,W,H);
+  g.fillStyle=`rgba(70,170,215,${.85*zp})`;g.fillRect(0,0,W,H);
+  g.lineJoin='round';g.lineWidth=Math.min(40,Math.max(1.5,R*.006));g.strokeStyle='rgba(150,235,240,.4)';
+  const lc=(a,b)=>Math.round(a+(b-a)*zp);
+  LAND_P.forEach(p=>{if(path(p))g.stroke()});
+  g.fillStyle=`rgb(${lc(78,214)},${lc(142,196)},${lc(80,148)})`;LAND_P.forEach(p=>{if(path(p))g.fill()});
+  g.fillStyle=`rgb(${lc(30,60)},${lc(95,160)},${lc(165,210)})`;WATER_P.forEach(p=>{if(path(p))g.fill()});
+  if(!big){const lg=g.createRadialGradient(cx,cy,R*.55,cx,cy,R);lg.addColorStop(0,'rgba(0,10,40,0)');lg.addColorStop(1,'rgba(0,10,40,.6)');g.fillStyle=lg;g.fillRect(0,0,W,H)}
+  g.restore();
+  const m=pr(lonC,latC),pa=cl(t/.2)*(1-sm(cl((zp-.5)/.3)));
+  if(pa>0){const ph=(e%1100)/1100;g.globalAlpha=pa;g.fillStyle='#ed1c24';g.beginPath();g.arc(m[0],m[1],5,0,6.2832);g.fill();g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.arc(m[0],m[1],8+ph*26,0,6.2832);g.globalAlpha=pa*(1-ph);g.stroke();g.globalAlpha=1}
+  if(!done&&e<6400)raf=requestAnimationFrame(frame)}
+ raf=requestAnimationFrame(frame)}
+runIntro();
+</script>
+</body>
+</html>
