@@ -5,119 +5,135 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>THE LEVANT · بلاد الشام</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <style>
-body[data-th=lv]{--c1:#150f33;--c2:#34267a;--ac:#f2b84b;--bt:#20143f;--cd:#fff3d6}
-body[data-th=lb]{--c1:#0a3220;--c2:#17703f;--ac:#ed1c24;--bt:#fff;--cd:#fff6dc}
-body[data-th=sy]{--c1:#0b1f45;--c2:#2457a3;--ac:#e8c26a;--bt:#1b1405;--cd:#f4f8ff}
-body[data-th=ps]{--c1:#380d11;--c2:#a82a31;--ac:#8fa63c;--bt:#fff;--cd:#fff4ee}
-body[data-th=jo]{--c1:#381809;--c2:#b4552a;--ac:#f0b35c;--bt:#3a1a0a;--cd:#fff2dc}
+:root{--ink:#33200f;--cream:#fbf1d6;--gold:#b8892d;--wine:#6e1a2a;--olive:#5f6b2f;--terra:#b5532f;
+--noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+--paper:radial-gradient(ellipse at 50% 40%,#f4e7c6 0,#e6d3a2 70%,#cdb078 100%)}
+body[data-th=lv]{--c1:#6e1a2a;--c2:#7a1f2b;--ac:#b8892d;--bt:#fbf1d6;--cd:#f6ebcb}
+body[data-th=lb]{--c1:#46561f;--c2:#6d1f2a;--ac:#b8892d;--bt:#fbf1d6;--cd:#f6ebcb}
+body[data-th=sy]{--c1:#5a1624;--c2:#7a1f2b;--ac:#c9962f;--bt:#fbf1d6;--cd:#f7ecd0}
+body[data-th=ps]{--c1:#8c3a22;--c2:#4b5a22;--ac:#b8892d;--bt:#fbf1d6;--cd:#f6ead0}
+body[data-th=jo]{--c1:#a4472a;--c2:#7a3a1a;--ac:#c8963e;--bt:#fbf1d6;--cd:#f7e9cc}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;font-family:"Segoe UI",Tahoma,system-ui,sans-serif;color:#fff;background:var(--c1)}
-.ttl{font-family:"Cormorant Garamond",Georgia,serif;letter-spacing:.05em;font-weight:700}
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Cormorant Garamond","Amiri",Georgia,serif;font-size:19px;font-weight:600;color:var(--ink);background:#d9c391}
+[dir=rtl] body,[dir=rtl] button{font-family:"Amiri","Cormorant Garamond",Georgia,serif}
+button{font-family:inherit}
+.ttl{font-family:"Cormorant Garamond",Georgia,serif;letter-spacing:.03em;font-weight:700}
 [dir=rtl] .ttl{font-family:"Amiri",Georgia,serif;letter-spacing:0}
-#stage{position:fixed;inset:0;background:#1d3f73}
+#stage{position:fixed;inset:0;background:#d9c391}
+#stage::after{content:"";position:absolute;inset:0;background:var(--noise);opacity:.55;mix-blend-mode:multiply;pointer-events:none;z-index:1;box-shadow:inset 0 0 150px rgba(110,60,20,.4)}
 #map{width:100%;height:100%;display:block;overflow:visible;touch-action:none;cursor:crosshair;direction:ltr;transition:opacity .8s}
 #map.shake{animation:shake .45s}
-.leb{filter:drop-shadow(0 5px 9px rgba(0,0,0,.4))}
+.leb{filter:drop-shadow(0 3px 4px rgba(60,30,10,.35))}
 .hidden{display:none!important}
-.btn{font:inherit;font-weight:800;border:0;border-radius:16px;padding:14px 28px;font-size:1.05rem;cursor:pointer;color:var(--bt);background:var(--ac);box-shadow:0 6px 18px rgba(0,0,0,.35);transition:transform .2s,box-shadow .2s,opacity .3s}
-.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.alt{background:var(--c2);color:#fff}
-.btn.sm{padding:8px 14px;font-size:.88rem;border-radius:12px;box-shadow:none}
-.pill{background:rgba(10,12,30,.8);backdrop-filter:blur(6px);color:#fff;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;font-size:.92rem;cursor:pointer}
-button.pill:hover{background:var(--c2)}
-#hud{position:absolute;top:24px;inset-inline-start:18px;display:flex;gap:8px;z-index:5;animation:fade .8s both}
-#ctl{position:absolute;top:24px;inset-inline-end:18px;display:flex;gap:8px;align-items:center;z-index:12}
-#vol{width:70px;accent-color:var(--ac)}
-#timer{position:absolute;top:22px;left:50%;transform:translateX(-50%);z-index:5;width:240px;text-align:center;background:rgba(10,12,30,.86);border:2px solid rgba(255,255,255,.3);border-radius:18px;padding:6px 14px 10px;animation:fade .5s both}
-#timer b{display:block;font-size:2.1rem;line-height:1.1;font-variant-numeric:tabular-nums}
-#timer .bar{height:12px;border-radius:8px;background:rgba(255,255,255,.18);overflow:hidden}
-#timer .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#3ddc84,#c8e64a);border-radius:8px;transition:width .1s linear}
-#timer.low{border-color:#ff3b3b;animation:pulse .6s infinite}
-#timer.low b{color:#ff4a4a}
-#timer.low .bar i{background:linear-gradient(90deg,#ff3b3b,#ff7a45)}
-.card{background:var(--cd);color:#1a1a1a;border-radius:20px;box-shadow:0 12px 34px rgba(0,0,0,.4);overflow:hidden;position:relative}
-.card::before{content:"";display:block;height:7px;background:linear-gradient(90deg,var(--c2),var(--ac),var(--c2))}
-#chal{position:absolute;top:84px;inset-inline-start:18px;z-index:4;width:250px;text-align:center;padding:0 14px 14px;animation:flip .7s both}
-#chal small{display:block;margin-top:10px;letter-spacing:2px;text-transform:uppercase;font-size:.7rem;color:var(--c2);font-weight:800}
-#chal h2{margin:2px 0 4px;font-size:2.1rem;color:var(--c2);line-height:1.1}
-#chal .fl{position:absolute;top:16px;inset-inline-end:10px;width:34px;border-radius:4px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.4)}
-#hints{list-style:none;margin:6px 0;padding:0;text-align:start;font-size:.88rem;line-height:1.4}
-#hints li{background:rgba(0,0,0,.06);border-radius:10px;padding:6px 9px;margin-top:6px;animation:slide .5s both}
-.side{position:absolute;top:84px;inset-inline-end:18px;width:340px;max-height:calc(100% - 170px);overflow:auto;z-index:8;animation:slide .6s both}
-.tile{height:120px;display:flex;align-items:center;justify-content:center;font-size:3.6rem;position:relative}
+.btn{font:inherit;font-weight:700;font-size:1.2rem;letter-spacing:.03em;border:2px solid #3b2416;border-radius:3px;padding:11px 26px;cursor:pointer;color:var(--bt);background:var(--c2);box-shadow:inset 0 0 0 3px var(--c2),inset 0 0 0 4.5px var(--gold),0 3px 0 #3b2416;transition:transform .15s,box-shadow .15s,opacity .3s}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:inset 0 0 0 3px var(--c2),inset 0 0 0 4.5px var(--gold),0 5px 0 #3b2416}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.alt{background:var(--cream);color:var(--ink);box-shadow:inset 0 0 0 3px var(--cream),inset 0 0 0 4.5px var(--c1),0 2px 0 #3b2416}
+.btn.sm{padding:6px 12px;font-size:1rem;box-shadow:inset 0 0 0 2px var(--cream),inset 0 0 0 3px var(--c1)}
+.btn:focus-visible,.pill:focus-visible,.cc:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pill{background:var(--cream);color:var(--ink);border:2px solid var(--c1);border-radius:3px;padding:5px 12px;font:inherit;font-weight:700;font-size:1.02rem;cursor:pointer;box-shadow:inset 0 0 0 2px var(--cream),inset 0 0 0 3px var(--gold)}
+button.pill:hover{background:#f0dfae}
+#hud{position:absolute;top:32px;inset-inline-start:34px;display:flex;gap:8px;z-index:5;animation:fade .8s both}
+#ctl{position:absolute;top:32px;inset-inline-end:34px;display:flex;gap:8px;align-items:center;z-index:12}
+#vol{width:70px;accent-color:var(--c2)}
+#timer{position:absolute;top:30px;left:50%;transform:translateX(-50%);z-index:5;width:230px;text-align:center;background:var(--cream);border:2px solid var(--c1);border-radius:3px;padding:3px 14px 9px;box-shadow:inset 0 0 0 2px var(--cream),inset 0 0 0 3px var(--gold),0 3px 0 rgba(60,30,10,.3);animation:fade .5s both}
+#timer b{display:block;font-size:2rem;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--ink)}
+#timer .bar{height:10px;border:1.5px solid var(--ink);background:#e3d2a2;overflow:hidden}
+#timer .bar i{display:block;height:100%;width:100%;background:repeating-linear-gradient(90deg,var(--olive) 0 10px,#7c8a3c 10px 20px);transition:width .1s linear}
+#timer.low{border-color:var(--wine);animation:pulse .6s infinite}
+#timer.low b{color:var(--wine)}
+#timer.low .bar i{background:repeating-linear-gradient(90deg,var(--wine) 0 10px,var(--terra) 10px 20px)}
+.card{background:var(--noise),var(--cd);color:var(--ink);border:2px solid var(--c1);border-radius:3px;box-shadow:inset 0 0 0 5px var(--cd),inset 0 0 0 6.5px var(--gold),0 5px 0 rgba(60,30,10,.25),0 14px 26px rgba(50,25,10,.35);overflow:hidden;position:relative}
+.card::before{content:"";display:block;height:9px;background:repeating-linear-gradient(90deg,var(--c1) 0 16px,var(--cream) 16px 32px);border-bottom:1.5px solid var(--gold)}
+#chal{position:absolute;top:90px;inset-inline-start:34px;z-index:4;width:262px;text-align:center;padding:0 14px 14px;animation:flip .7s both}
+#chal small{display:block;margin-top:10px;font-size:1.02rem;color:var(--c1);font-weight:700;font-style:italic}
+#chal h2{margin:0 0 4px;font-size:2.3rem;color:var(--c2);line-height:1.1}
+#chal .fl{position:absolute;top:18px;inset-inline-end:12px;width:34px;border:1.5px solid var(--ink);overflow:hidden}
+#hints{list-style:none;margin:6px 0;padding:0;text-align:start;font-size:1rem;line-height:1.3}
+#hints li{background:rgba(110,60,20,.09);border-inline-start:3px solid var(--gold);padding:5px 9px;margin-top:6px;animation:slide .5s both}
+.hb{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.side{position:absolute;top:90px;inset-inline-end:34px;width:340px;max-height:calc(100% - 180px);overflow:auto;z-index:8;animation:slide .6s both}
+.tile{height:120px;display:flex;align-items:center;justify-content:center;font-size:3.6rem;position:relative;border-bottom:2px solid var(--gold)}
 .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.fb{padding:14px 18px 18px}
-.fb h3{margin:0;font-size:1.5rem;color:var(--c2)}
-.verdict{display:inline-block;font-weight:900;padding:3px 12px;border-radius:999px;color:#fff;margin-bottom:6px}
-.verdict.ok{background:#1f9d55;animation:pop .6s}.verdict.no{background:#d97a1a}
-.dist{margin:2px 0 10px;font-weight:700;color:var(--c2)}
-.did{font-size:.75rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--c2);font-weight:800}
-.fb p{margin:4px 0 0;line-height:1.55}
-.nt{display:block;width:150px;margin:10px auto 0;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.35);animation:drop .7s cubic-bezier(.3,1.5,.5,1) both}
-.ntv{text-align:center;font-weight:900;color:#1f9d55;margin-top:4px}
-.stack{position:relative;height:104px;margin:8px 0 4px}
-.stack img{position:absolute;width:196px;border-radius:5px;box-shadow:0 3px 8px rgba(0,0,0,.35);animation:drop .7s cubic-bezier(.3,1.5,.5,1) both}
-.bignum{font-size:4rem;font-weight:900;color:var(--c2);animation:pop .9s;line-height:1}
+.fb{padding:14px 20px 20px}
+.fb h3{margin:0;font-size:1.7rem;color:var(--c2)}
+.verdict{display:inline-block;font-weight:700;padding:1px 12px;border:1.5px solid var(--ink);color:var(--cream);margin-bottom:6px;font-size:1.05rem}
+.verdict.ok{background:var(--olive);animation:pop .6s}.verdict.no{background:var(--terra)}
+.dist{margin:2px 0 10px;font-weight:700;color:var(--c1)}
+.did{font-size:1.05rem;font-style:italic;color:var(--c1);font-weight:700}
+.fb p{margin:4px 0 0;line-height:1.4;font-size:1.08rem}
+.prize{margin:10px auto 4px;padding:12px;width:max-content;max-width:100%;background:#e9d6a2;border:2px solid var(--c1);box-shadow:inset 0 0 0 3px #e9d6a2,inset 0 0 0 4.5px var(--gold),0 4px 0 rgba(60,30,10,.25)}
+.nt{display:block;width:210px;max-width:100%;border:1px solid var(--ink);box-shadow:0 4px 10px rgba(50,25,10,.4);animation:drop .8s cubic-bezier(.3,1.5,.5,1) both}
+.ntv{text-align:center;font-weight:700;color:var(--olive);margin-top:4px;font-size:1.2rem}
+.bignum{font-size:4rem;font-weight:700;color:var(--c2);animation:pop .9s;line-height:1}
 .bignum small{font-size:2rem;opacity:.7}
-#acts{position:absolute;bottom:30px;inset-inline:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5;pointer-events:none}
+#acts{position:absolute;bottom:34px;inset-inline:0;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:5;pointer-events:none}
 #acts>*{pointer-events:auto}
 #acts .row{display:flex;gap:10px}
-#zoom{position:absolute;bottom:30px;inset-inline-start:18px;display:flex;flex-direction:column;gap:6px;z-index:6}
+#zoom{position:absolute;bottom:34px;inset-inline-start:34px;display:flex;flex-direction:column;gap:6px;z-index:6}
 #zoom button{width:44px;height:44px;font-size:1.3rem;padding:0;display:flex;align-items:center;justify-content:center}
-#toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:#d33;padding:12px 22px;border-radius:14px;font-weight:800;z-index:13;opacity:0;pointer-events:none;transition:.3s;text-align:center}
+#toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.9);background:var(--wine);color:var(--cream);border:2px solid var(--gold);padding:10px 22px;font-weight:700;z-index:13;opacity:0;pointer-events:none;transition:.3s;text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
 #frame{position:absolute;inset:0;pointer-events:none;z-index:2}
-#frame i{position:absolute;background:var(--c1) var(--pat) repeat;opacity:.95}
-#frame .t,#frame .b{left:0;right:0;height:16px;background-size:auto 100%}
+#frame::after{content:"";position:absolute;inset:23px;border:1.5px solid var(--gold);box-shadow:0 0 0 1px rgba(60,30,10,.4)}
+#frame i{position:absolute;background:var(--c1) var(--pat) repeat;box-shadow:inset 0 0 0 1.5px rgba(251,241,214,.5)}
+#frame .t,#frame .b{left:0;right:0;height:20px;background-size:auto 100%}
 #frame .t{top:0}#frame .b{bottom:0}
-#frame .l,#frame .r{top:0;bottom:0;width:11px;background-size:100% auto}
+#frame .l,#frame .r{top:0;bottom:0;width:20px;background-size:100% auto}
 #frame .l{left:0}#frame .r{right:0}
-.cn{position:absolute;width:min(20vw,140px);height:min(20vw,140px);pointer-events:none}
-.cn.tl{top:14px;left:10px}.cn.tr{top:14px;right:10px;transform:scaleX(-1)}.cn.bl{bottom:18px;left:10px;transform:scaleY(-1)}.cn.br{bottom:18px;right:10px;transform:scale(-1,-1)}
-.ov{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:34px 22px;overflow:auto;animation:fade .8s both}
-#intro{background:radial-gradient(ellipse at 30% 20%,#3b2a7a 0,#150f33 60%),#150f33;z-index:9}
-#select{background:radial-gradient(ellipse at 70% 10%,#34267a 0,#150f33 65%);z-index:9;flex-direction:column;gap:20px}
-#splash{background:radial-gradient(circle,rgba(0,0,0,.35),rgba(0,0,0,.78));backdrop-filter:blur(3px)}
+.cn{position:absolute;width:min(18vw,128px);height:min(18vw,128px);pointer-events:none;opacity:.92}
+.cn.tl{top:22px;left:20px}.cn.tr{top:22px;right:20px;transform:scaleX(-1)}.cn.bl{bottom:22px;left:20px;transform:scaleY(-1)}.cn.br{bottom:22px;right:20px;transform:scale(-1,-1)}
+.ov{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:44px 28px;overflow:auto;animation:fade .8s both}
+#intro,#select{background:var(--noise),var(--paper);z-index:9}
+#select{flex-direction:column;gap:18px}
+#splash{background:rgba(60,30,10,.5)}
 .ib{display:flex;gap:34px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:1000px;position:relative;z-index:2}
 .it{text-align:center}
-.it .big{font-size:clamp(2.6rem,7vw,4.6rem);line-height:1;color:#fff;text-shadow:0 4px 24px rgba(242,184,75,.45)}
-.it .big2{font-size:clamp(2.4rem,6vw,4rem);color:#f2b84b;line-height:1.3;font-family:"Amiri",Georgia,serif;letter-spacing:0}
-.it p{opacity:.8;margin:10px 0 22px}
-#imap{width:min(440px,80vw);height:auto;border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);border:2px solid rgba(242,184,75,.5)}
+.it .big{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;color:var(--wine);text-shadow:0 2px 0 var(--cream)}
+.it .big2{font-size:clamp(2.2rem,5vw,3.4rem);color:var(--terra);line-height:1.3;font-family:"Amiri",Georgia,serif;letter-spacing:0}
+.it p{margin:10px 0 22px;font-size:1.25rem;color:var(--ink)}
+#imap{width:min(440px,80vw);height:auto;border:3px double var(--wine);padding:5px;background:var(--cream);box-shadow:0 10px 26px rgba(60,30,10,.4)}
 #imap path.cn1{animation:pop 1s both;transform-box:fill-box;transform-origin:center}
-#select h2{margin:0;font-size:clamp(1.8rem,5vw,2.8rem);text-align:center;position:relative;z-index:2}
-#select p{margin:0;opacity:.8;text-align:center;position:relative;z-index:2}
+#select h2{margin:0;font-size:clamp(2rem,5vw,3rem);text-align:center;color:var(--wine);position:relative;z-index:2}
+#select p{margin:0;text-align:center;font-size:1.2rem;position:relative;z-index:2}
 #cards{display:grid;grid-template-columns:repeat(4,minmax(0,210px));gap:18px;justify-content:center;position:relative;z-index:2}
-.cc{font:inherit;color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:22px;padding:14px 14px 18px;cursor:pointer;text-align:center;background:linear-gradient(160deg,var(--k1),var(--k2));box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,opacity .4s,filter .4s;animation:slide .7s both}
-.cc:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 18px 44px var(--k2)}
-.cc .fl{width:64px;margin:0 auto 8px;border-radius:5px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-.cc .mo{width:100%;height:auto;border-radius:12px;background:rgba(255,255,255,.1)}
-.cc .nm{font-size:1.9rem;margin-top:8px;line-height:1.1}
-.cc .tg{opacity:.85;font-size:.88rem;margin-top:4px}
-#cards.pick .cc{opacity:.25;filter:grayscale(.6);pointer-events:none}
-#cards.pick .cc.sel{opacity:1;filter:none;transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 20px 50px var(--k2)}
+.cc{font:inherit;color:var(--ink);border:2px solid var(--k1);border-radius:105px 105px 3px 3px/95px 95px 3px 3px;padding:16px 14px 16px;cursor:pointer;text-align:center;background:var(--cream);box-shadow:inset 0 0 0 4px var(--cream),inset 0 0 0 5.5px var(--gold),0 5px 0 rgba(60,30,10,.28);transition:transform .3s,box-shadow .3s,opacity .4s,filter .4s;animation:slide .7s both}
+.cc:hover{transform:translateY(-8px);box-shadow:inset 0 0 0 4px var(--cream),inset 0 0 0 5.5px var(--gold),0 12px 0 rgba(60,30,10,.2)}
+.cc .fl{width:56px;margin:6px auto 6px;border:1.5px solid var(--ink);overflow:hidden}
+.cc .mo{width:88%;height:auto;background:linear-gradient(var(--k2),var(--k1));opacity:.95;border-radius:90px 90px 2px 2px}
+.cc .nm{font-size:2rem;margin-top:4px;line-height:1.1;color:var(--k1)}
+.cc .tg{font-size:1.02rem;margin-top:2px}
+#cards.pick .cc{opacity:.3;filter:grayscale(.6);pointer-events:none}
+#cards.pick .cc.sel{opacity:1;filter:none;transform:scale(1.07)}
 .sp{text-align:center;max-width:400px;width:100%;padding:0 22px 26px;animation:flip .8s both}
-.sp .fl{width:100px;margin:20px auto 8px;border-radius:8px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.sp .fl{width:100px;margin:20px auto 8px;border:2px solid var(--ink);overflow:hidden}
 .sp h2{font-size:3.2rem;margin:0;color:var(--c2);line-height:1.1}
-.sp p{margin:6px 0 16px;color:#333}
+.sp p{margin:6px 0 16px;font-size:1.2rem}
+#flight{position:absolute;inset:0;z-index:14;padding:46px 30px;background:var(--noise),var(--paper);cursor:pointer;transition:opacity .6s}
+#fsvg{width:100%;height:100%;overflow:visible;display:block}
+#fcap{position:absolute;bottom:2.5%;left:0;right:0;text-align:center;font-size:clamp(1.5rem,4vw,2.3rem);font-style:italic;color:var(--wine);font-weight:700}
 #cinema{position:absolute;inset:0;z-index:15;background:#02040f;transition:opacity 1s ease}
 #cinema canvas{position:absolute;inset:0;width:100%;height:100%}
-#cap{position:absolute;bottom:14%;left:0;right:0;text-align:center;font-size:1.25rem;font-weight:700;letter-spacing:3px;text-shadow:0 2px 12px #000;opacity:0;transition:opacity .6s;padding:0 12px}
+#cap{position:absolute;bottom:14%;left:0;right:0;text-align:center;font-size:1.25rem;font-weight:700;letter-spacing:3px;text-shadow:0 2px 12px #000;opacity:0;transition:opacity .6s;padding:0 12px;color:#fff}
 #cap.last{font-size:clamp(2rem,6vw,3.4rem);letter-spacing:6px}
 #skip{position:absolute;bottom:18px;right:16px;z-index:16}
 #cheer{position:absolute;inset:0;z-index:11;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center;padding:20px}
-#cheer span{font-size:clamp(3.2rem,14vw,9rem);font-weight:900;color:#fff;text-shadow:0 0 40px #ffc93c,0 0 80px var(--ac),0 8px 0 var(--c2);animation:cheer 3.2s cubic-bezier(.3,.7,.3,1) both}
+#cheer span{font-size:clamp(3.2rem,14vw,9rem);font-weight:700;color:var(--cream);text-shadow:0 0 30px var(--gold),0 6px 0 var(--wine);animation:cheer 3.2s cubic-bezier(.3,.7,.3,1) both}
 #conf{position:absolute;inset:0;pointer-events:none;z-index:7}
+.pinp,.truep{filter:drop-shadow(0 2px 1.5px rgba(40,15,5,.5))}
 .pinp{animation:drop .45s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:bottom center}
 .wob{animation:wob 1.2s .4s ease-in-out 2;transform-box:fill-box;transform-origin:bottom center}
 .truep{animation:pop .6s .4s cubic-bezier(.3,1.6,.5,1) both;transform-box:fill-box;transform-origin:bottom center}
-.ring{fill:none;stroke:#ffc93c;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:ring 1.6s ease-out 3 both}
+.ring{fill:none;stroke:#7a1220;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:ring 1.6s ease-out 3 both}
 .spark{transform-box:fill-box;transform-origin:center;animation:spark 1.1s .5s ease-out both}
-.line{stroke:#ffc93c;stroke-width:3.5;stroke-dasharray:9 8;vector-effect:non-scaling-stroke;animation:fade .6s .2s both}
-.lbl{font-weight:800;fill:#1a1a1a;paint-order:stroke;stroke:#fff6dc;stroke-width:4;font-size:17px}
+.line{stroke:#7a1220;stroke-width:3.5;stroke-dasharray:9 8;vector-effect:non-scaling-stroke;animation:fade .6s .2s both}
+.hitr{fill:rgba(95,107,47,.14);stroke:#5f6b2f;stroke-width:2.5;stroke-dasharray:7 5;vector-effect:non-scaling-stroke;pointer-events:none}
+.vh{pointer-events:none;vector-effect:non-scaling-stroke;stroke:#7a1f2b;stroke-linecap:round;animation:fade .8s both}
+.vh.v0{fill:url(#hatch);stroke-width:2.5;stroke-dasharray:2 7}
+.vh.v1{fill:rgba(184,137,45,.26);stroke-width:3;stroke-dasharray:10 5}
+.lbl{font-weight:700;fill:var(--ink);paint-order:stroke;stroke:#f6ebcb;stroke-width:4;font-size:18px}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes slide{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes flip{from{opacity:0;transform:rotateX(70deg) translateY(-10px)}to{opacity:1;transform:none}}
@@ -129,18 +145,20 @@ button.pill:hover{background:var(--c2)}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes pulse{50%{transform:translateX(-50%) scale(1.05)}}
 @keyframes cheer{0%{opacity:0;transform:scale(.7)}22%{opacity:1;transform:scale(1)}85%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.18)}}
-@media(max-width:820px){#cards{grid-template-columns:repeat(2,minmax(0,170px))}.cc .nm{font-size:1.5rem}}
-@media(max-width:720px){
- #hud{top:22px;inset-inline-start:12px}#ctl{top:22px;inset-inline-end:12px;gap:5px}#vol{width:46px}
- #ctl .pill{padding:7px 10px;font-size:.8rem}
- #timer{top:64px;width:200px}
- #chal{top:118px;inset-inline-start:0;inset-inline-end:0;margin:auto;width:230px}
- #chal h2{font-size:1.6rem}
- .side{top:auto;bottom:86px;inset-inline:10px;width:auto;max-height:46%}.tile{height:70px;font-size:2.4rem}
- #zoom{bottom:auto;top:118px;inset-inline-start:10px}#zoom button{width:38px;height:38px}
- #acts{bottom:26px}
- .cn{width:70px;height:70px}
-}
+@media(max-width:820px){#cards{grid-template-columns:repeat(2,minmax(0,170px))}.cc .nm{font-size:1.6rem}}
+@media(max-width:720px){html,body{font-size:17px}
+ #hud{top:30px;inset-inline-start:26px}#ctl{top:30px;inset-inline-end:26px;gap:3px}#vol{width:30px}
+ #ctl .pill{padding:4px 8px;font-size:.9rem}
+ #timer{top:70px;width:190px}
+ #chal{top:122px;inset-inline-start:0;inset-inline-end:0;margin:auto;width:244px}#chal h2{font-size:1.7rem}
+ .side{top:auto;bottom:88px;inset-inline:26px;width:auto;max-height:46%}.tile{height:70px;font-size:2.4rem}
+ #zoom{bottom:auto;top:122px;inset-inline-start:26px}#zoom button{width:38px;height:38px}
+ #acts{bottom:30px}.cn{width:64px;height:64px}
+ .ov{padding:40px 24px}.btn{padding:9px 18px;font-size:1.05rem}
+ #bC .bt{display:none}#hud .pill{padding:4px 8px;font-size:.95rem}
+ #timer{top:68px;width:180px;padding:1px 12px 6px}#timer b{font-size:1.5rem}
+ #chal{top:128px;padding:0 10px 10px}#chal small{margin-top:6px;font-size:.9rem}#chal h2{font-size:1.5rem}#hints{font-size:.88rem;max-height:20vh;overflow:auto}#hints li{padding:3px 7px;margin-top:4px}.hb .btn.sm{font-size:.9rem;padding:4px 8px}
+ #zoom{top:128px}}
 </style>
 </head>
 <body data-th="lv">
@@ -148,8 +166,8 @@ button.pill:hover{background:var(--c2)}
 <div id="stage">
 <svg id="map" xmlns="http://www.w3.org/2000/svg" style="opacity:0">
  <defs>
-  <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dccb9c"/><stop offset="1" stop-color="#c9b27a"/></linearGradient>
-  <pattern id="wv" width="64" height="26" patternUnits="userSpaceOnUse"><path d="M0 13Q16 3 32 13T64 13" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="1.6"/></pattern>
+  <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6d6a6"/><stop offset="1" stop-color="#d4bb86"/></linearGradient><pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="rgba(122,31,43,.07)"/><path d="M0 0V9" stroke="#7a1f2b" stroke-opacity=".38" stroke-width="2"/></pattern>
+  <pattern id="wv" width="64" height="26" patternUnits="userSpaceOnUse"><path d="M0 13Q16 3 32 13T64 13" fill="none" stroke="#2f5b62" stroke-opacity=".22" stroke-width="1.2"/></pattern>
  </defs>
  <g id="world"></g><g id="done"></g><g id="fx"></g>
 </svg>
@@ -158,7 +176,7 @@ button.pill:hover{background:var(--c2)}
 <div id="hud" class="hidden"><span class="pill" id="rd"></span><span class="pill" id="sc"></span></div>
 <div id="ctl"><button class="pill hidden" id="bC"></button><button class="pill" id="mus" title="Music">🎵</button><input id="vol" type="range" min="0" max="1" step=".05" value=".7" aria-label="Volume"><button class="pill" id="lang"></button></div>
 <div id="timer" class="hidden"><b id="tn">30</b><div class="bar"><i id="tb"></i></div></div>
-<div id="chal" class="card hidden"><div class="fl" id="cfl"></div><small id="cfind"></small><h2 class="ttl" id="cn"></h2><ul id="hints"></ul><button class="btn sm alt" id="hintBtn"></button></div>
+<div id="chal" class="card hidden"><div class="fl" id="cfl"></div><small id="cfind"></small><h2 class="ttl" id="cn"></h2><ul id="hints"></ul><div class="hb"><button class="btn sm alt" id="hintBtn"></button><button class="btn sm alt" id="mhBtn"></button></div></div>
 <div id="zoom" class="hidden"><button class="pill" id="zi">+</button><button class="pill" id="zo">−</button><button class="pill" id="zr">⟲</button></div>
 <aside id="fact" class="side card hidden"></aside>
 <aside id="end" class="side card hidden"></aside>
@@ -173,6 +191,7 @@ button.pill:hover{background:var(--c2)}
 <section id="splash" class="ov hidden"><div class="sp card"><div class="fl" id="spf"></div><h2 class="ttl" id="spn"></h2><p id="spt" style="font-weight:700"></p><p id="spr"></p><button class="btn" id="begin"></button></div></section>
 <div id="cheer" class="hidden"><span id="cheerT"></span></div>
 <canvas id="conf"></canvas>
+<div id="flight" class="hidden"><svg id="fsvg" preserveAspectRatio="xMidYMid meet"></svg><div id="fcap"></div></div>
 <div id="cinema" class="hidden"><canvas id="gl"></canvas><div id="cap"></div><button class="pill" id="skip">⏭ Skip · تخطي</button></div>
 </div>
 
@@ -203,7 +222,7 @@ const EUPH=[[38.0,36.82],[38.4,36.2],[38.8,36.0],[39.0,35.95],[39.5,35.6],[40.14
 
 const city=(id,la,lo,e,n,h,f)=>({id,la,lo,e,n,h,f});
 const CT={
-lb:{id:'lb',n:['Lebanon','لبنان'],tg:['Land of the Cedars','بلد الأرز'],coast:LCOAST,land:LLAND,seas:[MED],lakes:[],rivers:[],g:[[0,'#f2e5bc'],[1,'#e2cb93']],gd:[0,0,1,1],cur:{n:['Lebanese Lira','ليرة لبنانية'],v:10},th:['#0a3220','#17703f'],
+lb:{id:'lb',n:['Lebanon','لبنان'],tg:['Land of the Cedars','بلد الأرز'],coast:LCOAST,land:LLAND,seas:[MED],lakes:[],rivers:[],g:[[0,'#f2e5bc'],[1,'#e2cb93']],gd:[0,0,1,1],cur:{n:['Lebanese Lira','ليرة لبنانية'],v:10},th:['#46561f','#7d8d3f'],
  cities:[
  city('beirut',33.8938,35.5018,'🌆',['Beirut','بيروت'],[['This city sits on a headland jutting into the Mediterranean on the central coast.','تقع هذه المدينة على رأس بري يمتد في المتوسط على الساحل الأوسط.'],['It is Lebanon’s capital and its largest city.','هي عاصمة لبنان وأكبر مدنه.']],['Beirut has been destroyed and rebuilt many times in its 5,000-year history, and layers of Phoenician, Roman and Ottoman life lie beneath the modern city.','دُمّرت بيروت وأُعيد بناؤها مرات عديدة خلال تاريخها الممتد نحو خمسة آلاف عام، وتحت المدينة الحديثة طبقات من العصور الفينيقية والرومانية والعثمانية.']),
  city('tripoli',34.4367,35.8497,'🍬',['Tripoli','طرابلس'],[['This city is on the northern coast, built around a pointed peninsula with islands offshore.','تقع هذه المدينة على الساحل الشمالي حول شبه جزيرة مدببة قبالتها جزر.'],['It is Lebanon’s second-largest city, known for its Mamluk old town and sweets.','هي ثاني أكبر مدن لبنان، وتشتهر ببلدتها القديمة المملوكية وحلوياتها.']],['Lebanon’s second-largest city is famous for its Mamluk architecture and its Arabic sweets, which draw visitors from every region.','ثاني أكبر مدن لبنان، تشتهر بعمارتها المملوكية وبحلويّاتها العربية التي يقصدها الزوّار من كل المناطق.']),
@@ -213,7 +232,7 @@ lb:{id:'lb',n:['Lebanon','لبنان'],tg:['Land of the Cedars','بلد الأر
  city('sidon',33.5631,35.3689,'🏰',['Sidon','صيدا'],[['This port city is on the southern coast, about 40 km south of Beirut.','هذه المدينة المرفئية على الساحل الجنوبي، على بعد نحو 40 كم جنوب بيروت.'],['A Crusader sea castle stands on a small island joined to its shore.','تقف قلعة صليبية بحرية على جزيرة صغيرة تتصل بشاطئها.']],['Sidon’s Sea Castle was built by the Crusaders in the 13th century on a small island joined to the shore by a stone causeway.','بنى الصليبيون قلعة صيدا البحرية في القرن الثالث عشر على جزيرة صغيرة تتصل باليابسة بجسر حجري.']),
  city('tyre',33.2733,35.1939,'🐚',['Tyre','صور'],[['This city is on a coastal peninsula near the far southern end of Lebanon.','هذه المدينة على شبه جزيرة ساحلية قرب أقصى جنوب لبنان.'],['It was a great Phoenician city, famed for its purple dye.','كانت مدينة فينيقية عظيمة اشتهرت بصبغتها الأرجوانية.']],['Ancient Tyre was a Phoenician power that gave the world Tyrian purple, a royal dye made from sea snails. It is now a UNESCO World Heritage site.','كانت صور قوة فينيقية قديمة أعطت العالم الأرجوان الصوري المستخرج من القواقع البحرية، وهي اليوم موقع تراث عالمي لليونسكو.']),
  city('bcharri',34.2500,36.0167,'🌲',['Bcharri','بشرّي'],[['This mountain town lies in the north, perched above a deep valley.','هذه البلدة الجبلية في الشمال، تتربع فوق وادٍ عميق.'],['It is the birthplace of the poet Khalil Gibran, near the Cedars of God.','هي مسقط رأس الشاعر جبران خليل جبران، قرب أرز الربّ.']],['Hometown of the poet Khalil Gibran, author of The Prophet, it sits near the Cedars of God in the Qadisha Valley.','مسقط رأس الشاعر جبران خليل جبران صاحب «النبي»، وتقع قرب أرز الربّ في وادي قاديشا.'])]},
-sy:{id:'sy',n:['Syria','سوريا'],tg:['Land of Jasmine','بلد الياسمين'],coast:SCOAST,land:SLAND,seas:[MED],lakes:[],rivers:[EUPH],g:[[0,'#d6dba6'],[.5,'#e6dcaa'],[1,'#ecd6a0']],gd:[0,0,1,.3],cur:{n:['Syrian Lira','ليرة سورية'],v:5},th:['#0b1f45','#2457a3'],
+sy:{id:'sy',n:['Syria','سوريا'],tg:['Land of Jasmine','بلد الياسمين'],coast:SCOAST,land:SLAND,seas:[MED],lakes:[],rivers:[EUPH],g:[[0,'#ebdeb0'],[.5,'#e6dcaa'],[1,'#ecd6a0']],gd:[0,0,1,.3],cur:{n:['Syrian Lira','ليرة سورية'],v:5},th:['#5a1624','#a4474f'],
  cities:[
  city('damascus',33.5138,36.2765,'🕌',['Damascus','دمشق'],[['This city lies in the southwest, inland in a green oasis at the foot of Mount Qasioun.','تقع هذه المدينة في الجنوب الغربي في واحة خضراء عند سفح جبل قاسيون.'],['It is the capital, famed for jasmine, Damascene steel and the Umayyad Mosque.','هي العاصمة، وتشتهر بالياسمين والفولاذ الدمشقي والجامع الأموي.']],['Damascus is often called one of the world’s oldest continuously inhabited cities, with the Umayyad Mosque and the Souq al-Hamidiyya at its heart.','تُعدّ دمشق من أقدم المدن المأهولة باستمرار في العالم، وفي قلبها الجامع الأموي وسوق الحميدية.']),
  city('aleppo',36.2021,37.1343,'🏰',['Aleppo','حلب'],[['This big city is in the north, not far from the Turkish border, on a plateau.','هذه المدينة الكبيرة في الشمال، ليست بعيدة عن الحدود التركية، على هضبة.'],['It is famed for its ancient citadel and its covered souks.','تشتهر بقلعتها العريقة وأسواقها المسقوفة.']],['Aleppo’s medieval citadel rises from a huge mound, its covered souks are among the longest in the world, and Aleppo laurel soap is famous.','ترتفع قلعة حلب من تلّ ضخم، وأسواقها المسقوفة من أطول أسواق العالم، ويشتهر صابون الغار الحلبي.']),
@@ -223,7 +242,7 @@ sy:{id:'sy',n:['Syria','سوريا'],tg:['Land of Jasmine','بلد الياسم�
  city('deir',35.3359,40.1408,'🌊',['Deir ez-Zor','دير الزور'],[['This city is in the east, on the banks of a great river in the desert plains.','هذه المدينة في الشرق، على ضفاف نهر عظيم في سهول صحراوية.'],['It stands on the Euphrates, downstream from Raqqa.','تقع على نهر الفرات، جنوب شرق الرقة.']],['Deir ez-Zor is Syria’s main city on the Euphrates, the longest river in western Asia.','دير الزور أكبر مدينة سورية على نهر الفرات، أطول أنهار غرب آسيا.']),
  city('bosra',32.5183,36.4811,'🎭',['Bosra','بصرى'],[['This ancient town is in the far south, close to the Jordanian border, on a volcanic plain.','هذه البلدة القديمة في أقصى الجنوب، قرب الحدود الأردنية، على سهل بركاني.'],['Its black basalt Roman theatre is remarkably well preserved.','مسرحها الروماني من البازلت الأسود محفوظ بشكل لافت.']],['Bosra’s Roman theatre is built of black basalt, seats about 15,000 people, and is still used for concerts.','بُني مسرح بصرى الروماني من البازلت الأسود ويتّسع لنحو 15 ألف متفرج، ولا يزال يُستخدم للحفلات.']),
  city('qamishli',37.0500,41.2200,'🚂',['Qamishli','القامشلي'],[['This city is in the far northeast, right on the Turkish border.','هذه المدينة في أقصى الشمال الشرقي، على الحدود التركية مباشرة.'],['It grew around a railway in the 1920s and is famously multicultural.','نمت حول سكة حديد في عشرينيات القرن الماضي، وتشتهر بتنوعها الثقافي.']],['Qamishli grew around a railway line in the 1920s and is home to Arabs, Kurds, Syriacs and Armenians.','نمت القامشلي حول خط سكة حديد في عشرينيات القرن الماضي، ويعيش فيها عرب وأكراد وسريان وأرمن.'])]},
-ps:{id:'ps',n:['Palestine','فلسطين'],tg:['Land of Olives','بلد الزيتون'],coast:PCOAST,land:PLAND,seas:[MED,GULF],lakes:[DEAD,GAL],rivers:[JRIV],g:[[0,'#d3dca8'],[.5,'#e6dcae'],[1,'#efd9a2']],gd:[0,0,0,1],cur:{n:['Palestine Pound','جنيه فلسطيني'],v:25},th:['#380d11','#a82a31'],
+ps:{id:'ps',n:['Palestine','فلسطين'],tg:['Land of Olives','بلد الزيتون'],coast:PCOAST,land:PLAND,seas:[MED,GULF],lakes:[DEAD,GAL],rivers:[JRIV],g:[[0,'#ecdfb2'],[.5,'#e6dcae'],[1,'#efd9a2']],gd:[0,0,0,1],cur:{n:['Palestine Pound','جنيه فلسطيني'],v:25},th:['#8c3a22','#c5663f'],
  cities:[
  city('jerusalem',31.7683,35.2137,'🕌',['Jerusalem','القدس'],[['This city sits in the central hills, about 55 km inland from the Mediterranean.','تقع هذه المدينة في التلال الوسطى، على بعد نحو 55 كم من المتوسط.'],['It holds the Dome of the Rock and the Church of the Holy Sepulchre.','فيها قبة الصخرة وكنيسة القيامة.']],['Jerusalem’s Old City packs sites sacred to Muslims, Christians and Jews into less than one square kilometre.','تضم القدس القديمة مواقع مقدسة للمسلمين والمسيحيين واليهود في أقل من كيلومتر مربع واحد.']),
  city('gaza',31.5017,34.4668,'🌊',['Gaza','غزة'],[['This coastal city is in the far southwest, near the edge of the Sinai.','هذه المدينة الساحلية في أقصى الجنوب الغربي، قرب حافة سيناء.'],['It is one of the world’s oldest ports, on the ancient Via Maris.','هي من أقدم موانئ العالم، على طريق «فيا ماريس» القديم.']],['Gaza has been a port on the Mediterranean for over 3,000 years, on the old Via Maris trade route between Egypt and the north.','كانت غزة مرفأً على المتوسط منذ أكثر من 3000 عام، على طريق «فيا ماريس» التجاري القديم بين مصر والشمال.']),
@@ -233,7 +252,7 @@ ps:{id:'ps',n:['Palestine','فلسطين'],tg:['Land of Olives','بلد الزي
  city('nablus',32.2211,35.2544,'🍮',['Nablus','نابلس'],[['This city lies in the northern hills, in a valley between two mountains.','تقع هذه المدينة في التلال الشمالية، في وادٍ بين جبلين.'],['It is famous for knafeh and olive-oil soap.','تشتهر بالكنافة وصابون الزيت.']],['Nablus is famous for knafeh sweets and for olive-oil soap that has been made there for centuries.','تشتهر نابلس بالكنافة وبصابون الزيت الذي يُصنع فيها منذ قرون.']),
  city('hebron',31.5326,35.0998,'🍇',['Hebron','الخليل'],[['This hill city is in the south of the central highlands, among vineyards, high above sea level.','هذه المدينة الجبلية في جنوب المرتفعات الوسطى، بين الكروم، على ارتفاع شاهق.'],['It is famous for grapes, glass and pottery.','تشتهر بالعنب والزجاج والفخار.']],['Hebron is known for its grapes, glassblowing and pottery, and for the Ibrahimi Mosque.','تشتهر الخليل بالعنب وصناعة الزجاج والفخار وبالحرم الإبراهيمي.']),
  city('jericho',31.8667,35.4500,'🌴',['Jericho','أريحا'],[['This oasis lies in the east, in the Jordan Valley close to the Dead Sea.','تقع هذه الواحة في الشرق، في غور الأردن قرب البحر الميت.'],['It is often called the lowest city on Earth.','يُقال إنها أخفض مدينة على وجه الأرض.']],['Jericho lies about 250 m below sea level and is often called the lowest and one of the oldest cities in the world.','تقع أريحا نحو 250 مترًا تحت مستوى سطح البحر، وغالبًا ما تُوصف بأنها أخفض مدينة وأحد أقدم مدن العالم.'])]},
-jo:{id:'jo',n:['Jordan','الأردن'],tg:['Land of Petra and Wadi Rum','بلد البترا ووادي رم'],coast:JCOAST,land:JLAND,seas:[GULF],lakes:[DEAD],rivers:[JRIV],g:[[0,'#dfd9a8'],[.5,'#ecd3a0'],[1,'#e3bd86']],gd:[0,0,1,1],cur:{n:['Jordanian Dinar','دينار أردني'],v:50},th:['#381809','#b4552a'],
+jo:{id:'jo',n:['Jordan','الأردن'],tg:['Land of Petra and Wadi Rum','بلد البترا ووادي رم'],coast:JCOAST,land:JLAND,seas:[GULF],lakes:[DEAD],rivers:[JRIV],g:[[0,'#eedbb0'],[.5,'#ecd3a0'],[1,'#e3bd86']],gd:[0,0,1,1],cur:{n:['Jordanian Dinar','دينار أردني'],v:50},th:['#8a3a1c','#c98a4a'],
  cities:[
  city('amman',31.9454,35.9284,'🏛️',['Amman','عمّان'],[['This city is in the northwest of the country, on hills east of the Jordan Valley.','هذه المدينة في شمال غرب البلاد، على تلال شرق غور الأردن.'],['It is the capital, once built on seven hills.','هي العاصمة، وقد بُنيت في الأصل على سبعة جبال.']],['Amman was once Philadelphia; its Roman Theatre seats about 6,000 and its hilltop Citadel holds the Temple of Hercules.','كانت عمّان تُسمّى فيلادلفيا؛ يتّسع مسرحها الروماني لنحو 6000 متفرج، وتضم قلعتها معبد هرقل.']),
  city('petra',30.3285,35.4444,'🏛️',['Petra','البتراء'],[['This ancient site is in the south, hidden in a mountain canyon east of Wadi Araba.','هذا الموقع الأثري في الجنوب، مخبأ في وادٍ جبلي شرق وادي عربة.'],['Its rock-cut Treasury is world famous.','خزنتها المنحوتة في الصخر مشهورة عالميًا.']],['Petra was carved into rose-red sandstone by the Nabataeans and was named one of the New Seven Wonders of the World in 2007.','نحت الأنباط البتراء في الحجر الرملي الوردي، واختيرت عام 2007 إحدى عجائب الدنيا السبع الجديدة.']),
@@ -244,12 +263,17 @@ jo:{id:'jo',n:['Jordan','الأردن'],tg:['Land of Petra and Wadi Rum','بلد
  city('azraq',31.8833,36.8286,'🦆',['Azraq','الأزرق'],[['This oasis is in the eastern desert, far from the Jordan Valley.','هذه الواحة في الصحراء الشرقية، بعيدًا عن غور الأردن.'],['Its wetlands attract migrating birds.','أراضيها الرطبة تجذب الطيور المهاجرة.']],['Azraq’s desert wetlands are a stop for migrating birds, and its black basalt fort was used by T. E. Lawrence in 1917.','تُعدّ أراضي الأزرق الرطبة محطة للطيور المهاجرة، واستخدم تي. إي. لورنس حصنها البازلتي عام 1917.']),
  city('umqais',32.6556,35.6819,'🏺',['Umm Qais','أم قيس'],[['This ancient town is at Jordan’s far northwest corner, overlooking a lake.','هذه البلدة القديمة في أقصى شمال غرب الأردن، تطل على بحيرة.'],['It was Roman Gadara, with black basalt ruins.','كانت جدارا الرومانية، وفيها آثار من البازلت الأسود.']],['Umm Qais, ancient Gadara, has black basalt ruins overlooking the Sea of Galilee and the Golan Heights.','أم قيس (جدارا القديمة) فيها آثار من البازلت الأسود تطل على بحيرة طبريا ومرتفعات الجولان.'])]}
 };
-const IDS=['lb','sy','ps','jo'],HIT_KM=20,TIME=30;
+const IDS=['lb','sy','ps','jo'],TIME=30;
+/* === CONFIG: edit freely === hit radius in km per country; map-hint radii in km [wide area, small area]; one prize needs this many correct (0 = everyone who finishes) */
+const HIT={lb:30,sy:40,ps:28,jo:35},VR={lb:[75,40],sy:[240,120],ps:[65,34],jo:[110,55]},PRIZE_MIN=0;
+const HK=()=>HIT[CC.id];
 
 /* ================= text ================= */
 const S={
 en:{pick:'Choose a country',pickSub:'Each country is its own game: 8 places, 8 points.',begin:'Begin',find:'Find this place',lock:'Lock My Guess',next:'Next',res:'See My Results',hint:'Hint',noHints:'No more hints',round:'Round',countries:'Countries',time:'Time’s up!',outside:'Place your pin inside the map',d:'Your pin landed {d} km away',nog:'You didn’t place a pin',ok:'Spot on! 🎉',near:'So close!',no:'Not quite',p1:'+1 point',p0:'0 points',again:'Play Again',another:'Choose Another Country',cheer:'WELL DONE!',of:'places found',prize:'Your prize',total:'Total',booth:'Booth money · no cash value',none:'No notes this time. Try again!',m:['Time for a road trip! Play again and learn the map.','Good start! Keep exploring and try again.','Nice work! You know your way around.','Impressive! A true expert.','Flawless! You know it like the back of your hand! 🌟'],c1:'PLANET EARTH',c2:'THE EASTERN MEDITERRANEAN',rules:'8 places · 30 seconds each · 2 hints',other:'العربية',did:'Did you know?'},
 ar:{pick:'اختر دولة',pickSub:'لكل دولة لعبتها الخاصة: 8 أماكن و8 نقاط.',begin:'ابدأ',find:'جد هذا المكان',lock:'ثبّت تخميني',next:'التالي',res:'شاهد النتيجة',hint:'تلميح',noHints:'لا مزيد من التلميحات',round:'الجولة',countries:'الدول',time:'انتهى الوقت!',outside:'ضع الدبوس داخل الخريطة',d:'سقط دبوسك على بعد {d} كم',nog:'لم تضع دبوسًا',ok:'إصابة مباشرة! 🎉',near:'قريب جدًا!',no:'ليس تمامًا',p1:'+1 نقطة',p0:'0 نقطة',again:'العب مجددًا',another:'اختر دولة أخرى',cheer:'أحسنتم!',of:'أماكن تم إيجادها',prize:'جائزتك',total:'المجموع',booth:'مصاري الدنيا · بلا قيمة نقدية',none:'لا أوراق نقدية هذه المرة. حاول مجددًا!',m:['حان وقت رحلة! العب مجددًا وتعرّف على الخريطة.','بداية جيدة! تابع الاستكشاف وحاول مجددًا.','عمل جميل! أنت تعرف طريقك.','رائع! خبير حقيقي.','مثالي! تعرفها كظهر يدك! 🌟'],c1:'كوكب الأرض',c2:'شرق المتوسط',rules:'8 أماكن · 30 ثانية لكل مكان · تلميحان',other:'English',did:'هل تعلم؟'}};
+Object.assign(S.en,{rules:'8 places · 30 seconds each · hints are optional',mh:'Map hint',noMh:'No more map hints',mh1:'A wide area is marked on the map.',mh2:'A smaller area is marked on the map.',fly:'Flying to {c}…',prizeT:'Your prize for finishing'});
+Object.assign(S.ar,{rules:'8 أماكن · 30 ثانية لكل مكان · التلميحات اختيارية',mh:'تلميح بالخريطة',noMh:'لا مزيد من تلميحات الخريطة',mh1:'تم تحديد منطقة واسعة على الخريطة.',mh2:'تم تحديد منطقة أصغر على الخريطة.',fly:'نحلّق إلى {c}…',prizeT:'جائزتك عند إتمام الجولات'});
 let L='en';const li=()=>L==='en'?0:1,t=k=>S[L][k];
 
 /* ================= art: flags, symbols, patterns ================= */
@@ -263,27 +287,28 @@ function symbols(){
  const bz=u=>{const a=(1-u)*(1-u),b=2*(1-u)*u,c=u*u;return[a*6+b*70+c*112,a*8+b*30+c*106]};
  const tan=u=>{const p=bz(u),q=bz(u+.01);return Math.atan2(q[1]-p[1],q[0]-p[0])/RD};
  const stem='<path d="M6 8Q70 30 112 106" fill="none" stroke="#6b4a2b" stroke-width="3" stroke-linecap="round"/>';
- let ce=stem,ol=stem,ja=stem.replace('#6b4a2b','#4d7a3a');
+ let ce=stem,ol=stem,ja=stem.replace('#6b4a2b','#5a7030');
  for(let i=0;i<7;i++){const u=.12+i*.13,[x,y]=bz(u),a=tan(u);for(const s of[-1,1]){
-  ce+=`<ellipse cx="${x}" cy="${y}" rx="15" ry="4.2" fill="${i%2?'#1f7a3f':'#2f9e5a'}" transform="rotate(${a+s*62} ${x} ${y}) translate(${s*10} 0)"/>`;
-  ol+=`<ellipse cx="${x}" cy="${y}" rx="10" ry="2.8" fill="${i%2?'#7d9a3a':'#a2b85a'}" transform="rotate(${a+s*48} ${x} ${y}) translate(${s*8} 0)"/>`;
-  ja+=`<ellipse cx="${x}" cy="${y}" rx="7" ry="2.6" fill="#3f8f4f" transform="rotate(${a+s*55} ${x} ${y}) translate(${s*6} 0)"/>`}
-  if(i%2===0)ol+=`<circle cx="${x+5}" cy="${y+8}" r="3.4" fill="#3d4a22"/>`}
- for(const u of[.2,.43,.66,.88]){const[x,y]=bz(u);for(let k=0;k<5;k++)ja+=`<ellipse cx="${x}" cy="${y-6}" rx="3.2" ry="5.8" fill="#fff" stroke="#d8cfae" stroke-width=".6" transform="rotate(${k*72} ${x} ${y})"/>`;ja+=`<circle cx="${x}" cy="${y}" r="2.4" fill="#f2c94c"/>`}
- let pe='<g fill="#c2602a" stroke="#7a3b1c" stroke-width="1.1" stroke-linejoin="round">';for(let i=0;i<9;i++)pe+=`<path d="M${6+i*11} 6l5.5 11 5.5-11z"/><path d="M6 ${6+i*11}l11 5.5-11 5.5z"/>`;
- pe+='</g><g transform="translate(46 44)" fill="#e4a46a" stroke="#7a3b1c" stroke-width="1"><path d="M0 34V12L20 0l20 12v22z"/><rect x="6" y="14" width="4" height="20"/><rect x="30" y="14" width="4" height="20"/><path d="M14 34V22a6 6 0 0 1 12 0v12z" fill="#7a3b1c"/></g>';
+  ce+=`<ellipse cx="${x}" cy="${y}" rx="15" ry="4.2" fill="${i%2?'#4d5c27':'#7a8a3c'}" transform="rotate(${a+s*62} ${x} ${y}) translate(${s*10} 0)"/>`;
+  ol+=`<ellipse cx="${x}" cy="${y}" rx="10" ry="2.8" fill="${i%2?'#6b7a38':'#8c9a4c'}" transform="rotate(${a+s*48} ${x} ${y}) translate(${s*8} 0)"/>`;
+  ja+=`<ellipse cx="${x}" cy="${y}" rx="7" ry="2.6" fill="#5a7030" transform="rotate(${a+s*55} ${x} ${y}) translate(${s*6} 0)"/>`}
+  if(i%2===0)ol+=`<circle cx="${x+5}" cy="${y+8}" r="3.4" fill="#2f3a18"/>`}
+ for(const u of[.2,.43,.66,.88]){const[x,y]=bz(u);for(let k=0;k<5;k++)ja+=`<ellipse cx="${x}" cy="${y-6}" rx="3.2" ry="5.8" fill="#fff" stroke="#d8cfae" stroke-width=".6" transform="rotate(${k*72} ${x} ${y})"/>`;ja+=`<circle cx="${x}" cy="${y}" r="2.4" fill="#c9962f"/>`}
+ let pe='<g fill="#b5532f" stroke="#7a3b1c" stroke-width="1.1" stroke-linejoin="round">';for(let i=0;i<9;i++)pe+=`<path d="M${6+i*11} 6l5.5 11 5.5-11z"/><path d="M6 ${6+i*11}l11 5.5-11 5.5z"/>`;
+ pe+='</g><g transform="translate(46 44)" fill="#d9a874" stroke="#7a3b1c" stroke-width="1"><path d="M0 34V12L20 0l20 12v22z"/><rect x="6" y="14" width="4" height="20"/><rect x="30" y="14" width="4" height="20"/><path d="M14 34V22a6 6 0 0 1 12 0v12z" fill="#7a3b1c"/></g>';
  const m={cedar:ce,olive:ol,jasmine:ja,petra:pe};
  $('#symdefs').innerHTML=Object.keys(m).map(k=>`<symbol id="d-${k}" viewBox="0 0 120 120">${m[k]}</symbol>`).join('')+
- `<symbol id="m-lb" viewBox="0 0 160 120"><path d="M0 100L40 52l30 36 36-50 54 62z" fill="#9fc79a" opacity=".6"/><rect x="76" y="66" width="8" height="42" fill="#6b4a2b"/><ellipse cx="80" cy="60" rx="50" ry="12" fill="#1f7a3f"/><ellipse cx="80" cy="46" rx="40" ry="11" fill="#2f9e5a"/><ellipse cx="80" cy="33" rx="29" ry="9" fill="#1f7a3f"/><ellipse cx="80" cy="22" rx="18" ry="7" fill="#2f9e5a"/><circle cx="132" cy="22" r="9" fill="#ed1c24"/></symbol>
- <symbol id="m-sy" viewBox="0 0 160 120"><rect x="0" y="100" width="160" height="20" fill="#0b1f45" opacity=".5"/><path d="M34 104V72a34 34 0 0 1 68 0v32z" fill="#e8c26a"/><rect x="66" y="26" width="4" height="12" fill="#e8c26a"/><circle cx="68" cy="24" r="4" fill="#e8c26a"/><rect x="112" y="40" width="9" height="64" fill="#f4e4b0"/><path d="M112 40l4.5-14 4.5 14z" fill="#e8c26a"/><g transform="translate(130 80)">${[0,1,2,3,4].map(k=>`<ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#fff" transform="rotate(${k*72})"/>`).join('')}<circle r="3.2" fill="#f2c94c"/></g></symbol>
- <symbol id="m-ps" viewBox="0 0 160 120"><path d="M80 104C74 86 82 76 70 64M80 104C86 88 80 74 92 62" stroke="#5a4326" stroke-width="7" fill="none" stroke-linecap="round"/>${[[56,52,22],[80,40,26],[106,52,22],[70,62,18],[94,60,18]].map(c=>`<circle cx="${c[0]}" cy="${c[1]}" r="${c[2]}" fill="#6f8f2e"/>`).join('')}<circle cx="86" cy="36" r="6" fill="#9db555"/><g fill="#fff4ee" opacity=".95">${Array.from({length:8},(_,k)=>`<path d="M${12+k*18} 110l6-6 6 6-6 6z" fill="${k%2?'#fff':'#f0a0a0'}"/>`).join('')}</g></symbol>
- <symbol id="m-jo" viewBox="0 0 160 120"><path d="M0 104Q40 80 80 100T160 92V120H0z" fill="#e3a766"/><rect x="40" y="22" width="80" height="80" rx="4" fill="#c2602a"/><path d="M52 52V36L80 22l28 14v16z" fill="#e4a46a" stroke="#7a3b1c"/><rect x="58" y="54" width="6" height="30" fill="#e4a46a"/><rect x="96" y="54" width="6" height="30" fill="#e4a46a"/><circle cx="80" cy="60" r="11" fill="#e4a46a" stroke="#7a3b1c"/><path d="M68 100V80a12 12 0 0 1 24 0v20z" fill="#7a3b1c"/></symbol>`;
+ `<symbol id="m-lb" viewBox="0 0 160 120"><path d="M0 100L40 52l30 36 36-50 54 62z" fill="#b9c39a" opacity=".6"/><rect x="76" y="66" width="8" height="42" fill="#6b4a2b"/><ellipse cx="80" cy="60" rx="50" ry="12" fill="#4d5c27"/><ellipse cx="80" cy="46" rx="40" ry="11" fill="#7a8a3c"/><ellipse cx="80" cy="33" rx="29" ry="9" fill="#4d5c27"/><ellipse cx="80" cy="22" rx="18" ry="7" fill="#7a8a3c"/><circle cx="132" cy="22" r="9" fill="#8a1f2d"/></symbol>
+ <symbol id="m-sy" viewBox="0 0 160 120"><rect x="0" y="100" width="160" height="20" fill="#5a1624" opacity=".5"/><path d="M34 104V72a34 34 0 0 1 68 0v32z" fill="#c9a04a"/><rect x="66" y="26" width="4" height="12" fill="#c9a04a"/><circle cx="68" cy="24" r="4" fill="#c9a04a"/><rect x="112" y="40" width="9" height="64" fill="#efdca8"/><path d="M112 40l4.5-14 4.5 14z" fill="#c9a04a"/><g transform="translate(130 80)">${[0,1,2,3,4].map(k=>`<ellipse cx="0" cy="-8" rx="4.5" ry="8" fill="#fff" transform="rotate(${k*72})"/>`).join('')}<circle r="3.2" fill="#c9962f"/></g></symbol>
+ <symbol id="m-ps" viewBox="0 0 160 120"><path d="M80 104C74 86 82 76 70 64M80 104C86 88 80 74 92 62" stroke="#5a4326" stroke-width="7" fill="none" stroke-linecap="round"/>${[[56,52,22],[80,40,26],[106,52,22],[70,62,18],[94,60,18]].map(c=>`<circle cx="${c[0]}" cy="${c[1]}" r="${c[2]}" fill="#6b7a38"/>`).join('')}<circle cx="86" cy="36" r="6" fill="#a3b068"/><g fill="#fff4ee" opacity=".95">${Array.from({length:8},(_,k)=>`<path d="M${12+k*18} 110l6-6 6 6-6 6z" fill="${k%2?'#fff':'#f0a0a0'}"/>`).join('')}</g></symbol>
+ <symbol id="m-jo" viewBox="0 0 160 120"><path d="M0 104Q40 80 80 100T160 92V120H0z" fill="#d9b27c"/><rect x="40" y="22" width="80" height="80" rx="4" fill="#b5532f"/><path d="M52 52V36L80 22l28 14v16z" fill="#d9a874" stroke="#7a3b1c"/><rect x="58" y="54" width="6" height="30" fill="#d9a874"/><rect x="96" y="54" width="6" height="30" fill="#d9a874"/><circle cx="80" cy="60" r="11" fill="#d9a874" stroke="#7a3b1c"/><path d="M68 100V80a12 12 0 0 1 24 0v20z" fill="#7a3b1c"/></symbol>`;
 }
-const PAT={lv:`<svg xmlns="http://www.w3.org/2000/svg" width="40" height="16"><path d="M1 8l4-5 4 5-4 5z" fill="#2f9e5a"/><path d="M11 8l4-5 4 5-4 5z" fill="#3a6fc4"/><path d="M21 8l4-5 4 5-4 5z" fill="#d6414a"/><path d="M31 8l4-5 4 5-4 5z" fill="#e0803a"/></svg>`,
- lb:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="16"><path d="M12 1l4 5h-3l4 4h-3l4 5H6l4-5H7l4-4H8z" fill="#f6e7b8"/></svg>`,
- sy:`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="16"><path d="M10 1l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#e8c26a"/></svg>`,
- ps:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="16"><path d="M4 3l4 4M8 3l-4 4M16 9l4 4M20 9l-4 4M10 8l4 4M14 8l-4 4" stroke="#fff4ee" stroke-width="1.6" fill="none"/></svg>`,
- jo:`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="16"><path d="M0 12l6-8 6 8 6-8 6 8" fill="none" stroke="#f0b35c" stroke-width="2"/></svg>`};
+const T_=(bg,body)=>`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="${bg}"/>${body}</svg>`;
+const PAT={lv:T_('#6e1a2a','<path d="M0 0h10v10H0zM10 10h10v10H10z" fill="#efdca8"/><path d="M10 4l4 6-4 6-4-6z" fill="#b8892d"/>'),
+ lb:T_('#46561f','<path d="M10 2l6 6h-3l5 5H2l5-5H4z" fill="#efdca8"/><rect x="9" y="14" width="2" height="5" fill="#b8892d"/>'),
+ sy:T_('#5a1624','<path d="M10 1l2.5 6.5L19 10l-6.5 2.5L10 19l-2.5-6.5L1 10l6.5-2.5z" fill="#c9a04a"/><circle cx="10" cy="10" r="2" fill="#5a1624"/>'),
+ ps:T_('#8c3a22','<path d="M4 4l5 5M9 4l-5 5M11 11l5 5M16 11l-5 5M11 4l5 5M16 4l-5 5M4 11l5 5M9 11l-5 5" stroke="#efdca8" stroke-width="1.6" fill="none"/>'),
+ jo:T_('#a4472a','<path d="M0 14h5v-5h5v-5h5v5h5v5" fill="none" stroke="#efdca8" stroke-width="2"/><path d="M0 19h20" stroke="#c8963e" stroke-width="2"/>')};
 const CORN={lv:['cedar','jasmine','olive','petra'],lb:Array(4).fill('cedar'),sy:Array(4).fill('jasmine'),ps:Array(4).fill('olive'),jo:Array(4).fill('petra')};
 function corners(el,th){el.querySelectorAll('.cn').forEach(e=>e.remove());['tl','tr','bl','br'].forEach((p,i)=>{el.insertAdjacentHTML('beforeend',`<svg class="cn ${p}" viewBox="0 0 120 120"><use href="#d-${CORN[th][i]}"/></svg>`)})}
 function theme(th){document.body.dataset.th=th;document.body.style.setProperty('--pat',`url("data:image/svg+xml,${encodeURIComponent(PAT[th])}")`);corners($('#frame'),th)}
@@ -301,15 +326,15 @@ function buildWorld(c){
   `<path d="${D(PJ(c.coast))}" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="${D(PJ(c.coast))}" fill="none" stroke="#9a6b2f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="${D(PJ([c.coast[c.coast.length-1],...c.land,c.coast[0]]))}" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="5" stroke-linejoin="round"/><path d="${D(PJ([c.coast[c.coast.length-1],...c.land,c.coast[0]]))}" fill="none" stroke="#7a2230" stroke-width="2.4" stroke-dasharray="9 5 2 5" stroke-linejoin="round"/>`;
  world.innerHTML=`<defs>
-  <linearGradient id="seaG" gradientUnits="userSpaceOnUse" x1="${x1}" y1="0" x2="${x2}" y2="0"><stop offset="0" stop-color="#06245e"/><stop offset=".55" stop-color="#0f55a8"/><stop offset=".85" stop-color="#2b8fcf"/><stop offset="1" stop-color="#5cc6dd"/></linearGradient>
+  <linearGradient id="seaG" gradientUnits="userSpaceOnUse" x1="${x1}" y1="0" x2="${x2}" y2="0"><stop offset="0" stop-color="#7fa3a3"/><stop offset=".55" stop-color="#9bb9b0"/><stop offset=".85" stop-color="#b3c9bb"/><stop offset="1" stop-color="#c7d6c0"/></linearGradient>
   <linearGradient id="landG" x1="${c.gd[0]}" y1="${c.gd[1]}" x2="${c.gd[2]}" y2="${c.gd[3]}">${c.g.map(([o,col])=>`<stop offset="${o}" stop-color="${col}"/>`).join('')}</linearGradient>
   <clipPath id="wc">${seas.map(d=>`<path d="${d}Z"/>`).join('')}</clipPath></defs>
  <rect x="-5000" y="-5000" width="10000" height="10000" fill="url(#ng)"/>
  ${seas.map(d=>`<path d="${d}Z" fill="url(#seaG)"/><path d="${d}Z" fill="url(#wv)"/>`).join('')}
- <g clip-path="url(#wc)" fill="none" stroke="#9be7ee" stroke-linejoin="round">${seas.map(d=>`<path d="${d}Z" stroke-width="60" stroke-opacity=".12"/><path d="${d}Z" stroke-width="34" stroke-opacity=".16"/><path d="${d}Z" stroke-width="14" stroke-opacity=".26"/>`).join('')}</g>
+ <g clip-path="url(#wc)" fill="none" stroke="#e8f0dc" stroke-linejoin="round">${seas.map(d=>`<path d="${d}Z" stroke-width="60" stroke-opacity=".12"/><path d="${d}Z" stroke-width="34" stroke-opacity=".16"/><path d="${d}Z" stroke-width="14" stroke-opacity=".26"/>`).join('')}</g>
  <path class="leb" d="${D(pts)}Z" fill="url(#landG)"/>
- ${lakes.map(d=>`<path d="${d}Z" fill="#59b4de" stroke="#2f86b5" stroke-width="1.5"/>`).join('')}
- ${c.rivers.map(r=>`<path d="${D(PJ(r))}" fill="none" stroke="#5aaee0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`).join('')}
+ ${lakes.map(d=>`<path d="${d}Z" fill="#a3c3c0" stroke="#4d7f84" stroke-width="1.5"/>`).join('')}
+ ${c.rivers.map(r=>`<path d="${D(PJ(r))}" fill="none" stroke="#5b8f98" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`).join('')}
  ${edges}`;
 }
 let vb={...BASE},ms=[];
@@ -362,13 +387,15 @@ const TK={
 function bar(tr,n,t,bus){const s=60/tr.bpm,md=d=>tr.root+tr.sc[d%7]+12*Math.floor(d/7);
  tr.bars[n%tr.bars.length].forEach(([i,d,st,du])=>INS[i](bus,t+st*s,md(d),du*s,i==='qan'?.16:.11));
  tr.bass.forEach(([st,d,du])=>INS.oud(bus,t+st*s,md(d),du*s,.2));tr.perc.forEach(([st,k,v])=>perc(bus,t+st*s,k,v))}
-const hf=id=>AU.files[id]!==undefined?Promise.resolve(AU.files[id]):fetch('audio/'+id+'.mp3',{method:'HEAD'}).then(r=>AU.files[id]=r.ok).catch(()=>AU.files[id]=false);
-function playTrack(id){const x=actx();if(!x||(AU.cur&&AU.cur.id===id))return;
- if(AU.cur){const o=AU.cur;o.bus.gain.cancelScheduledValues(x.currentTime);o.bus.gain.setValueAtTime(o.bus.gain.value,x.currentTime);o.bus.gain.linearRampToValueAtTime(0,x.currentTime+1.4);clearInterval(o.iv);setTimeout(()=>{o.bus.disconnect();if(o.au)o.au.pause()},2200)}
- const tr=TK[id],bus=x.createGain();bus.gain.setValueAtTime(0,x.currentTime);bus.gain.linearRampToValueAtTime(.55,x.currentTime+1.6);bus.connect(AU.mb);
- const c=AU.cur={id,bus,n:0,t:x.currentTime+.15};
- hf(id).then(ok=>{if(AU.cur!==c)return;if(ok){/* licensed/own recording supplied as audio/<id>.mp3 */const a=new Audio('audio/'+id+'.mp3');a.loop=true;x.createMediaElementSource(a).connect(bus);a.play().catch(()=>{});c.au=a;return}
-  c.iv=setInterval(()=>{while(c.t<x.currentTime+.5){if(AU.on)bar(tr,c.n,c.t,bus);c.t+=tr.beats*60/tr.bpm;c.n++}},120)})}
+const vol=()=>AU.on?AU.vol:0;AU.T=[];
+setInterval(()=>{AU.T=AU.T.filter(c=>{c.k=Math.max(0,Math.min(1,c.k+(c.up?.025:-.025)));if(c.gn)c.gn.gain.value=c.k;else if(c.au)c.au.volume=Math.min(1,c.k*vol());if(c.bus)c.bus.gain.value=c.k*.55;
+ if(!c.up&&c.k<=0){if(c.au){c.au.pause();c.au.removeAttribute('src');c.au.load()}if(c.bus)c.bus.disconnect();if(c.gn)c.gn.disconnect();clearInterval(c.iv);return false}return true})},40);
+/* plays audio/<id>.mp3 (lb, sy, ps, jo, lev); falls back to the synthesized tune only if the file is missing */
+function playTrack(id){const x=actx();if(AU.cur&&AU.cur.id===id)return;if(AU.cur)AU.cur.up=0;
+ const c=AU.cur={id,k:0,up:1},a=new Audio('audio/'+id+'.mp3');a.loop=true;a.volume=0;c.au=a;AU.T.push(c);
+ if(x&&/^https?:/.test(location.protocol)){try{c.gn=x.createGain();c.gn.gain.value=0;x.createMediaElementSource(a).connect(c.gn);c.gn.connect(AU.mb);a.volume=1}catch(e){c.gn=null}}
+ const fb=()=>{if(!c.up||c.iv||!x)return;c.au=null;const tr=TK[id],bus=c.bus=x.createGain();bus.gain.value=0;bus.connect(AU.mb);c.t=x.currentTime+.15;c.n=0;c.iv=setInterval(()=>{while(c.t<x.currentTime+.5){if(AU.on)bar(tr,c.n,c.t,bus);c.t+=tr.beats*60/tr.bpm;c.n++}},120)};
+ a.addEventListener('error',fb);a.play().catch(e=>{if(e.name!=='NotAllowedError')fb()})}
 function sfx(k){const x=actx();if(!x)return;const t=x.currentTime+.01,b=AU.sb;
  if(k==='pin')perc(b,t,'t',.18);
  if(k==='tick')perc(b,t,'t',.1);
@@ -448,14 +475,15 @@ function cinema(c,done){
 /* ================= game ================= */
 let G={phase:'intro',deck:[],i:0,found:0,pin:null,guess:null,done:[],over:false,h:0};
 const cur=()=>G.deck[G.i];
-function pinAt(x,y,col,cls){const m=M(fx,x,y);const g=E('g',{class:cls},m.g);E('path',{d:'M0 0C-12-14-16-22-16-30a16 16 0 0 1 32 0C16-22 12-14 0 0Z',fill:col,stroke:'#fff','stroke-width':3},g);E('circle',{cy:-30,r:6,fill:'#fff'},g);return m}
+function pinAt(x,y,col,cls,st){const m=M(fx,x,y);const g=E('g',{class:cls},m.g);E('path',{d:'M0 0C-12-14-16-22-16-30a16 16 0 0 1 32 0C16-22 12-14 0 0Z',fill:col,stroke:'#fbf1d6','stroke-width':3},g);
+E('circle',{cy:-30,r:st?7:6,fill:'#fbf1d6'},g);if(st){const p=[];for(let i=0;i<16;i++){const r=i%2?4:9,a=i*Math.PI/8;p.push((r*Math.cos(a)).toFixed(1)+','+(-30+r*Math.sin(a)).toFixed(1))}E('polygon',{points:p.join(' '),fill:col},g)}return m}
 function toast(s){const e=$('#toast');e.textContent=s;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)}
 function drawDone(){dn.innerHTML='';ms=ms.filter(m=>!m.done);if(!CC)return;
- G.done.forEach(c=>{const m=M(dn,X(c.lo),Y(c.la),G.over?1.5:1);m.done=1;E('circle',{r:6,fill:'#00a651',stroke:'#fff','stroke-width':2.5},m.g);
+ G.done.forEach(c=>{const m=M(dn,X(c.lo),Y(c.la),G.over?1.5:1);m.done=1;E('circle',{r:6,fill:'#5f6b2f',stroke:'#fbf1d6','stroke-width':2.5},m.g);
   const tx=E('text',{class:'lbl',x:L==='ar'?-10:10,y:-9,'text-anchor':L==='ar'?'end':'start'},m.g);tx.textContent=c.n[li()]})}
 function tap(cx,cy){if(G.phase!=='guess')return;const p=toS(cx,cy);
  if(!inPoly(pts,p.x,p.y)||lakePts.some(l=>inPoly(l,p.x,p.y))){toast(t('outside'));svg.classList.remove('shake');void svg.getBoundingClientRect();svg.classList.add('shake');return}
- if(G.pin)rm(G.pin);G.pin=pinAt(p.x,p.y,'#ed1c24','pinp');G.guess=p;$('#lock').disabled=false;sfx('pin')}
+ if(G.pin)rm(G.pin);G.pin=pinAt(p.x,p.y,'#3f5a2a','pinp');G.guess=p;$('#lock').disabled=false;sfx('pin')}
 
 function setPhase(p){G.phase=p;
  const on=(s,v)=>$(s).classList.toggle('hidden',!v),g=p==='guess',r=p==='reveal',inGame=g||r||p==='finale'||p==='end';
@@ -466,30 +494,47 @@ function setPhase(p){G.phase=p;
  theme((p==='intro'||p==='select')?'lv':CC.id);render()}
 function render(){
  document.documentElement.lang=L;document.documentElement.dir=L==='ar'?'rtl':'ltr';
- $('#lang').textContent=t('other');$('#bC').textContent='☰ '+t('countries');
+ $('#lang').textContent=t('other');$('#bC').innerHTML='☰<span class="bt"> '+t('countries')+'</span>';
  $('#selT').textContent=t('pick');$('#selP').textContent=t('pickSub');
  $('#cards').innerHTML=IDS.map((id,i)=>{const c=CT[id];return `<button class="cc" data-id="${id}" style="--k1:${c.th[0]};--k2:${c.th[1]};animation-delay:${i*.1}s"><div class="fl">${flag(id)}</div><svg class="mo" viewBox="0 0 160 120"><use href="#m-${id}"/></svg><div class="ttl nm">${c.n[li()]}</div><div class="tg">${c.tg[li()]}</div></button>`}).join('');
  $$('.cc').forEach(b=>b.onclick=()=>chooseCountry(b.dataset.id));
  if(CC){$('#spf').innerHTML=flag(CC.id);$('#spn').textContent=CC.n[li()];$('#spt').textContent=CC.tg[li()];$('#spr').textContent=t('rules');$('#begin').textContent=t('begin');
-  $('#rd').textContent=`${t('round')} ${Math.min(G.i+1,8)}/8`;$('#sc').textContent=`⭐ ${G.found}`;
+  $('#rd').textContent=`${t('round')} ${Math.min(G.i+1,8)}/8`;$('#sc').textContent=`✦ ${G.found}`;
   $('#lock').textContent=t('lock');$('#next').textContent=G.i===7?t('res'):t('next');$('#cfind').textContent=t('find');$('#cfl').innerHTML=flag(CC.id);
   const c=cur();if(c){$('#cn').textContent=c.n[li()];renderHints()}
   if(G.phase==='reveal')fillFact();if(G.phase==='end')fillEnd();drawDone()}}
-function renderHints(){const c=cur();if(!c)return;$('#hints').innerHTML=c.h.slice(0,G.h).map(h=>`<li>💡 ${h[li()]}</li>`).join('');const b=$('#hintBtn');b.textContent=G.h>=2?t('noHints'):`💡 ${t('hint')} (${2-G.h})`;b.disabled=G.h>=2}
+function renderHints(){const c=cur();if(!c)return;$('#hints').innerHTML=c.h.slice(0,G.h).map(h=>`<li>💡 ${h[li()]}</li>`).join('')+[t('mh1'),t('mh2')].slice(0,G.v).map(h=>`<li>🧭 ${h}</li>`).join('');const b=$('#hintBtn');b.textContent=G.h>=2?t('noHints'):`💡 ${t('hint')} (${2-G.h})`;b.disabled=G.h>=2;const v=$('#mhBtn');v.textContent=G.v>=2?t('noMh'):`🗺 ${t('mh')} (${2-G.v})`;v.disabled=G.v>=2}
+function vhShape(c,lv){let g=fx.querySelector('#vh');if(!g){g=E('g',{id:'vh'},fx);fx.insertBefore(g,fx.firstChild)}
+ const R=VR[CC.id][lv],h=[...c.id].reduce((s,ch)=>(s*31+ch.charCodeAt(0))>>>0,7),an=(h%360)*RD,off=(lv?.3:.35)*R,
+ la=c.la+Math.sin(an)*off/111.195,lo=c.lo+Math.cos(an)*off/(111.195*Math.cos(c.la*RD)),cx=X(lo),cy=Y(la),r=R*K/111.195,sd=c.lo*100+lv*7,p=[];
+ for(let i=0;i<48;i++){const q=i/48*6.2832,n=1+.07*Math.sin(q*3+sd)+.045*Math.sin(q*5+sd*2);p.push([cx+Math.cos(q)*r*n,cy+Math.sin(q)*r*n])}
+ E('path',{d:D(p)+'Z',class:'vh v'+lv},g)}
 $('#hintBtn').onclick=()=>{if(G.phase!=='guess'||G.h>=2)return;G.h++;renderHints();sfx('lock')};
+$('#mhBtn').onclick=()=>{if(G.phase!=='guess'||G.v>=2)return;vhShape(cur(),G.v);G.v++;renderHints();sfx('lock')};
 
 /* navigation */
 $('#go').onclick=()=>{actx();playTrack('lev');setPhase('select')};
 $('#bC').onclick=()=>toCountries();
 function toCountries(){clearInterval(G.iv);clearTimeout(G.fin1);clearTimeout(G.fin2);$('#cheer').classList.add('hidden');G.phase='select';fx.innerHTML='';dn.innerHTML='';ms=[];playTrack('lev');setPhase('select')}
+const PLANE='<g style="filter:drop-shadow(4px 7px 3px rgba(60,30,10,.3))"><path d="M6 -5L-6 -38Q-3 -41 5 -39L18 -5ZM6 5L-6 38Q-3 41 5 39L18 5Z" fill="#8a1f2d" stroke="#4a1019" stroke-width="1.4"/><path d="M-22 -2L-32 -16L-26 -16L-15 -2ZM-22 2L-32 16L-26 16L-15 2Z" fill="#8a1f2d" stroke="#4a1019" stroke-width="1.2"/><path d="M-28 0Q-26 -5 -10 -6L20 -5Q34 -3 37 0Q34 3 20 5L-10 6Q-26 5 -28 0Z" fill="#f4e6c1" stroke="#6e1a2a" stroke-width="1.8"/><path d="M-12 0H24" stroke="#c9962f" stroke-width="2"/><ellipse cx="9" cy="0" rx="5" ry="2.6" fill="#6e1a2a"/><ellipse cx="38" cy="0" rx="2.6" ry="11" fill="#3b2416" opacity=".45"/></g>';
+function flight(c,done){const box=$('#flight'),sv=$('#fsvg'),lo0=33.9,la1=37.4,la0=29.1,cs=Math.cos(33.2*RD),k=520/(la1-la0),w=(42.7-lo0)*cs*k,h=520,pj=(lo,la)=>[(lo-lo0)*cs*k,(la1-la)*k],P=a=>D(a.map(q=>pj(q[0],q[1])));
+ let fin=0;const go=()=>{if(fin)return;fin=1;cancelAnimationFrame(raf);clearTimeout(tm);done();const cb=$('#cinema');cb.style.transition='none';cb.style.opacity=0;void cb.offsetWidth;cb.style.transition='opacity .7s ease';cb.style.opacity=1;setTimeout(()=>{box.classList.add('hidden');box.style.opacity=1},900)};
+ let raf,tm;box.style.opacity=1;box.classList.remove('hidden');sv.setAttribute('viewBox',`0 0 ${w} ${h}`);const mc=sv.getScreenCTM(),[dx,dy]=pj(c.lonC,c.latC),sx=Math.min(-w*.15,-mc.e/mc.a-70),sy=h*.95,q=[(sx+dx)/2,Math.min(sy,dy)-h*.35];
+ sv.setAttribute('viewBox',`0 0 ${w} ${h}`);
+ sv.innerHTML=`<defs><clipPath id="fcl"><rect width="${w}" height="${h}"/></clipPath></defs><rect width="${w}" height="${h}" fill="#ecdcae"/><g clip-path="url(#fcl)"><rect x="7" y="7" width="${w-14}" height="${h-14}" fill="none" stroke="#b8892d" stroke-width="1.5"/><path d="${P(MED)}Z" fill="#a9c3b8"/><path d="${P(GULF)}Z" fill="#a9c3b8"/>${IDS.map(id=>`<path d="${P(ring(CT[id]))}Z" fill="${id===c.id?'#b5532f':'#dcc790'}" fill-opacity="${id===c.id?.8:1}" stroke="#6e1a2a" stroke-width="1.4" stroke-linejoin="round"/>`).join('')}</g><rect width="${w}" height="${h}" fill="none" stroke="#6e1a2a" stroke-width="3"/><path id="fp" d="M${sx} ${sy}Q${q[0]} ${q[1]} ${dx} ${dy}" fill="none"/><path id="ftr" fill="none" stroke="#6e1a2a" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.1 9"/><circle cx="${dx}" cy="${dy}" r="6" fill="#7a1220" stroke="#fbf1d6" stroke-width="2"/><circle class="ring" cx="${dx}" cy="${dy}" r="6"/><g id="fpl"><g transform="scale(.95)">${PLANE}</g></g>`;
+ box.style.opacity=1;box.classList.remove('hidden');$('#fcap').textContent=t('fly').replace('{c}',c.n[li()]);box.onclick=go;
+ const fp=$('#fp'),tr=$('#ftr'),pl=$('#fpl'),L0=fp.getTotalLength(),DUR=matchMedia('(prefers-reduced-motion:reduce)').matches?900:2800,t0=performance.now(),pts=[];
+ (function f(n){const p=Math.min(1,(n-t0)/DUR),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,a=fp.getPointAtLength(e*L0),b=fp.getPointAtLength(Math.min(L0,e*L0+2)),ang=Math.atan2(b.y-a.y,b.x-a.x)/RD;
+  pts.push([a.x,a.y]);tr.setAttribute('d','M'+pts.map(u=>u[0].toFixed(1)+' '+u[1].toFixed(1)).join('L'));pl.setAttribute('transform',`translate(${a.x} ${a.y}) rotate(${ang})`);
+  if(p<1)raf=requestAnimationFrame(f);else tm=setTimeout(go,550)})(t0)}
 function chooseCountry(id){actx();playTrack(id);clearInterval(G.iv);
  $$('.cc').forEach(b=>b.classList.toggle('sel',b.dataset.id===id));$('#cards').classList.add('pick');
  setTimeout(()=>{$('#cards').classList.remove('pick');setProj(CT[id]);buildWorld(CC);fx.innerHTML='';dn.innerHTML='';ms=[];setVB(BASE);
-  G={phase:'cinema',deck:[...CC.cities].sort(()=>Math.random()-.5),i:0,found:0,pin:null,guess:null,done:[],over:false,h:0};
+  G={phase:'cinema',deck:[...CC.cities].sort(()=>Math.random()-.5),i:0,found:0,pin:null,guess:null,done:[],over:false,h:0,v:0};
   ['intro','select','splash','hud','timer','chal','zoom','fact','end','acts','frame'].forEach(s=>$('#'+s).classList.add('hidden'));svg.style.opacity=1;theme(id);
-  cinema(CC,()=>setPhase('splash'))},650)}
+  flight(CC,()=>cinema(CC,()=>setPhase('splash')))},650)}
 $('#begin').onclick=()=>{round()};
-function round(){fx.innerHTML='';ms=ms.filter(m=>m.done);G.pin=null;G.guess=null;G.h=0;$('#lock').disabled=true;$('#hints').innerHTML='';fly(BASE,700);setPhase('guess');startTimer()}
+function round(){fx.innerHTML='';ms=ms.filter(m=>m.done);G.pin=null;G.guess=null;G.h=0;G.v=0;$('#lock').disabled=true;$('#hints').innerHTML='';fly(BASE,700);setPhase('guess');startTimer()}
 function startTimer(){clearInterval(G.iv);G.t0=performance.now();G.ls=99;$('#timer').classList.remove('low');
  G.iv=setInterval(()=>{const left=Math.max(0,TIME-(performance.now()-G.t0)/1000),s=Math.ceil(left);$('#tn').textContent=s;$('#tb').style.width=(left/TIME*100)+'%';$('#timer').classList.toggle('low',left<=10);
   if(s!==G.ls){G.ls=s;if(s<=10&&s>0)sfx('tick')}
@@ -497,41 +542,40 @@ function startTimer(){clearInterval(G.iv);G.t0=performance.now();G.ls=99;$('#tim
 $('#lock').onclick=()=>{if(G.pin)lock(false)};
 function lock(to){clearInterval(G.iv);const c=cur(),tx=X(c.lo),ty=Y(c.la),g=G.pin?G.guess:null;
  G.d=null;G.hit=false;
- if(g){const la=CC.lat1-g.y/K,lo=g.x/(C*K)+CC.lon0;G.d=hav(la,lo,c.la,c.lo);G.hit=G.d<=HIT_KM;E('line',{class:'line',x1:g.x,y1:g.y,x2:tx,y2:ty},fx)}
+ if(g){const la=CC.lat1-g.y/K,lo=g.x/(C*K)+CC.lon0;G.d=hav(la,lo,c.la,c.lo);G.hit=G.d<=HK();E('line',{class:'line',x1:g.x,y1:g.y,x2:tx,y2:ty},fx)}
  if(G.hit)G.found++;
- const m=pinAt(tx,ty,'#ffc93c','truep');
- if(G.hit){for(let i=0;i<14;i++){const a=i/14*6.283,r=40+Math.random()*30,s=E('circle',{class:'spark',r:5,cx:0,cy:-15,fill:['#ed1c24','#fff','#00a651','#ffc93c'][i%4]},m.g);s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',Math.sin(a)*r+'px')}sfx('ok')}
+ E('circle',{class:'hitr',cx:tx,cy:ty,r:HK()*K/111.195},fx);const vh=fx.querySelector('#vh');if(vh)vh.style.opacity=.3;const m=pinAt(tx,ty,'#7a1220','truep',1);
+ if(G.hit){for(let i=0;i<14;i++){const a=i/14*6.283,r=40+Math.random()*30,s=E('circle',{class:'spark',r:5,cx:0,cy:-15,fill:['#7a1220','#fbf1d6','#5f6b2f','#c9962f'][i%4]},m.g);s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',Math.sin(a)*r+'px')}sfx('ok')}
  else{E('circle',{class:'ring',r:8,cx:0,cy:-2},m.g);if(G.pin)G.pin.g.firstChild.classList.add('wob');sfx(g?'no':'lock')}
  if(g)fit([g.x,g.y],[tx,ty]);else fit([tx,ty],[tx,ty]);
  setPhase('reveal')}
-function fillFact(){const c=cur(),d=G.d,v=d===null?['no',t('nog')]:d<=HIT_KM?['ok',t('ok')]:d<=80?['no',t('near')]:['no',t('no')];
+function fillFact(){const c=cur(),d=G.d,v=d===null?['no',t('nog')]:d<=HK()?['ok',t('ok')]:d<=80?['no',t('near')]:['no',t('no')];
  const dl=d===null?'':t('d').replace('{d}',d.toFixed(d<10?1:0))+' · ';
  $('#fact').innerHTML=`<div class="tile" style="background:linear-gradient(135deg,${CC.th[0]},${CC.th[1]})"><span>${c.e}</span><img src="img/${c.id}.jpg" alt="" onerror="this.remove()"></div>
- <div class="fb"><span class="verdict ${v[0]}">${v[1]}</span><h3>${c.n[li()]}</h3><div class="dist">${dl}${G.hit?t('p1'):t('p0')}</div><div class="did">${t('did')}</div><p>${c.f[li()]}</p>${G.hit?`<img class="nt" src="${NOTE[CC.id]}" alt=""><div class="ntv">+${CC.cur.v} ${CC.cur.n[li()]}</div>`:''}</div>`}
+ <div class="fb"><span class="verdict ${v[0]}">${v[1]}</span><h3>${c.n[li()]}</h3><div class="dist">${dl}${G.hit?t('p1'):t('p0')}</div><div class="did">${t('did')}</div><p>${c.f[li()]}</p></div>`}
 $('#next').onclick=()=>{fx.innerHTML='';ms=ms.filter(m=>m.done);G.pin=null;
  if(G.i<7){G.done.push(cur());G.i++;round()}
  else{fly(BASE,1400);setPhase('finale');$('#cheerT').textContent=t('cheer');const ch=$('#cheer');ch.classList.remove('hidden');confetti();sfx('fin');
   G.fin1=setTimeout(()=>{dn.style.transition='opacity .5s';dn.style.opacity=0},2800);
   G.fin2=setTimeout(()=>{ch.classList.add('hidden');if(G.phase!=='finale')return;G.done.push(cur());G.over=true;setPhase('end');dn.style.transition='opacity 1.3s';requestAnimationFrame(()=>requestAnimationFrame(()=>dn.style.opacity=1))},3400)}};
 function fillEnd(){const s=G.found,m=S[L].m[s>=8?4:s>=6?3:s>=4?2:s>=2?1:0],cu=CC.cur;
- const stack=Array.from({length:s},(_,i)=>`<img src="${NOTE[CC.id]}" alt="" style="left:${i*12}px;top:${(i%2)*4}px;z-index:${i};transform:rotate(${(i%2?1:-1)*(1+i%3)}deg);animation-delay:${i*.12}s">`).join('');
  $('#end').innerHTML=`<div class="fb" style="text-align:center"><div class="bignum">${s}<small>/8</small></div><div class="dist">${t('of')}</div><p style="margin:8px 0 10px;font-weight:700">${m}</p>
- <div class="did">${t('prize')}</div>${s?`<div class="stack">${stack}</div><div class="ntv" style="font-size:1.1rem">${t('total')}: ${s*cu.v} ${cu.n[li()]}</div><div style="font-size:.78rem;opacity:.7;margin-top:2px">${t('booth')}</div>`:`<p>${t('none')}</p>`}
+ ${s>=PRIZE_MIN?`<div class="did">${t('prizeT')}</div><div class="prize"><img class="nt" src="${NOTE[CC.id]}" alt=""></div><div class="ntv">${cu.v} ${cu.n[li()]}</div><div style="font-size:.95rem;opacity:.75;margin-top:2px">${t('booth')}</div>`:`<p>${t('none')}</p>`}
  <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px"><button class="btn" id="again">${t('again')}</button><button class="btn alt" id="another">${t('another')}</button></div></div>`;
  $('#again').onclick=()=>{setPhase('select');chooseCountry(CC.id)};$('#another').onclick=toCountries}
-function confetti(){const c=$('#conf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#ed1c24','#ffffff','#00a651','#ffc93c','#2a8fd0'];
+function confetti(){const c=$('#conf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const cols=['#8a1f2d','#f6ebcb','#5f6b2f','#c9962f','#b5532f'];
  const ps=Array.from({length:120},()=>({x:Math.random()*c.width,y:-Math.random()*c.height,r:5+Math.random()*7,v:2+Math.random()*3.5,s:Math.random()*2-1,a:Math.random()*6,c:cols[Math.random()*5|0]}));
  let f=0;(function loop(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.a+=.06)*1.5+p.s;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.r,p.r*.6)});if(++f<760)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)})()}
 $('#lang').onclick=()=>{L=L==='en'?'ar':'en';render()};
 
 /* ================= intro illustrated map of the four countries ================= */
 function introMap(){const lo0=33.9,la0=29.1,la1=37.4,c=Math.cos(33.2*RD),k=520/(la1-la0),w=(42.7-lo0)*c*k,h=520;
- const P=a=>D(a.map(([lo,la])=>[(lo-lo0)*c*k,(la1-la)*k])),col={lb:'#2f9e5a',sy:'#3a6fc4',ps:'#d6414a',jo:'#e0803a'};
+ const P=a=>D(a.map(([lo,la])=>[(lo-lo0)*c*k,(la1-la)*k])),col={lb:'#6b7a38',sy:'#a4474f',ps:'#b5532f',jo:'#c98a4a'};
  $('#imap').setAttribute('viewBox',`0 0 ${w} ${h}`);
- $('#imap').innerHTML=`<defs><linearGradient id="isg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f3b86"/><stop offset="1" stop-color="#2b8fcf"/></linearGradient><linearGradient id="ilg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9c79b"/><stop offset="1" stop-color="#c3a870"/></linearGradient></defs>
+ $('#imap').innerHTML=`<defs><linearGradient id="isg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fa3a3"/><stop offset="1" stop-color="#b3c9bb"/></linearGradient><linearGradient id="ilg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe0b4"/><stop offset="1" stop-color="#dcc590"/></linearGradient></defs>
  <rect width="${w}" height="${h}" fill="url(#ilg)"/><path d="${P(MED)}Z" fill="url(#isg)"/><path d="${P(GULF)}Z" fill="url(#isg)"/>
  ${IDS.map((id,i)=>`<path class="cn1" d="${P(ring(CT[id]))}Z" fill="${col[id]}" stroke="#fff" stroke-width="2" stroke-linejoin="round" style="animation-delay:${.3+i*.25}s"/>`).join('')}
- ${[DEAD,GAL].map(l=>`<path d="${P(l)}Z" fill="#59b4de"/>`).join('')}`}
+ ${[DEAD,GAL].map(l=>`<path d="${P(l)}Z" fill="#a3c3c0"/>`).join('')}`}
 
 /* ================= boot ================= */
 symbols();introMap();theme('lv');corners($('#intro'),'lv');corners($('#select'),'lv');
